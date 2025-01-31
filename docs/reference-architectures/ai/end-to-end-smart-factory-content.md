@@ -26,18 +26,18 @@ This example architecture shows an end-to-end approach to internet-of-things (Io
 
 ### Components
 
-- [Azure IoT Edge](https://azure.microsoft.com/services/iot-edge) service analyzes device data locally to send less data to the cloud, react to events quickly, and operate in low-connectivity conditions. An IoT Edge ML module can extract actionable insights from streaming video data.
-- [Azure IoT Hub](https://azure.microsoft.com/services/iot-hub) is a managed service that enables reliable and secure bidirectional communications between millions of IoT devices and a cloud-based back end. IoT Hub provides per-device authentication, message routing, integration with other Azure services, and management features to control and configure IoT devices.
-- [Azure Logic Apps](https://azure.microsoft.com/services/logic-apps) is a serverless cloud service for creating and running automated workflows that integrate apps, data, services, and systems. Developers can use a visual designer to schedule and orchestrate common task workflows.  Logic Apps has [connectors](/connectors) for many popular cloud services, on-premises products, and other software as a service (SaaS) applications. In this solution, Logic Apps runs the automated notification workflow that sends SMS and email alerts to site engineers.
-- [Power Apps](https://powerapps.microsoft.com) is a data platform and a suite of apps, services, and connectors. It serves as a rapid application development environment. The underlying data platform is Microsoft Dataverse.
+- [Azure IoT Edge](/azure/iot-edge/about-iot-edge) service analyzes device data locally to send less data to the cloud, react to events quickly, and operate in low-connectivity conditions. An IoT Edge ML module can extract actionable insights from streaming video data.
+- [Azure IoT Hub](/azure/well-architected/service-guides/iot-hub/reliability) is a managed service that enables reliable and secure bidirectional communications between millions of IoT devices and a cloud-based back end. IoT Hub provides per-device authentication, message routing, integration with other Azure services, and management features to control and configure IoT devices.
+- [Azure Logic Apps](/azure/logic-apps/logic-apps-overview) is a serverless cloud service for creating and running automated workflows that integrate apps, data, services, and systems. Developers can use a visual designer to schedule and orchestrate common task workflows.  Logic Apps has [connectors](/connectors) for many popular cloud services, on-premises products, and other software as a service (SaaS) applications. In this solution, Logic Apps runs the automated notification workflow that sends SMS and email alerts to site engineers.
+- [Power Apps](/power-apps/powerapps-overview) is a data platform and a suite of apps, services, and connectors. It serves as a rapid application development environment. The underlying data platform is Microsoft Dataverse.
 - [Dataverse](/power-apps/maker/data-platform/data-platform-intro) is a cloud-based storage platform for Power Apps. Dataverse supports human-in-the-loop notifications and stores metadata associated with the MLOps data pipeline.
-- [Azure Blob Storage](https://azure.microsoft.com/services/storage/blobs) is scalable and secure object storage for unstructured data. You can use it for archives, data lakes, high-performance computing, machine learning, and cloud-native workloads. In this solution, Blob storage provides a local data store for the ML data store and a Premium data cache for training the ML model. The premium tier of Blob Storage is for workloads that require fast response times and high transaction rates, like the human-in-the-loop video labeling in this example.
-- [Data Lake Storage](https://azure.microsoft.com/services/storage/data-lake-storage) is a massively scalable and secure storage service for high-performance analytics workloads. The data typically comes from multiple heterogeneous sources and can be structured, semi-structured, or unstructured. Azure Data Lake Storage Gen2 combines Azure Data Lake Storage Gen1 capabilities with Blob Storage, and provides file system semantics, file-level security, and scale. It also offers the tiered storage, high availability, and disaster recovery capabilities of Blob Storage. In this solution, Data Lake Storage provides the archival video store for the raw video files and metadata.
-- [Azure Data Factory](https://azure.microsoft.com/services/data-factory) is a hybrid, fully managed, serverless solution for data integration and transformation workflows. It provides a code-free UI and an easy-to-use monitoring panel. Azure Data Factory uses pipelines for data movement. Mapping data flows perform various transformation tasks such as extract, transform, and load (ETL) and extract, load, and transform (ELT). In this example, Data Factory orchestrates the data in an ETL pipeline to the inferencing data, which it stores for retraining purposes.
-- [Azure Machine Learning](https://azure.microsoft.com/services/machine-learning) is an enterprise-grade machine learning service for building and deploying models quickly. It provides users at all skill levels with a low-code designer, automated machine learning, and a hosted Jupyter notebook environment that supports various IDEs.
-- [Azure Pipelines](https://azure.microsoft.com/services/devops/pipelines), part of [Azure DevOps](https://azure.microsoft.com/services/devops) team-based developer services, creates continuous integration (CI) and continuous deployment (CD) pipelines. In this example, the Azure Pipelines model orchestrator validates ML code, triggers serverless task pipelines, compares ML models, and builds the inferencing container.
-- [Container Registry](https://azure.microsoft.com/services/container-registry) creates and manages the Docker registry to build, store, and manage Docker container images, including containerized ML models.
-- [Azure Monitor](https://azure.microsoft.com/services/monitor) collects telemetry from Azure resources, so teams can proactively identify problems and maximize performance and reliability.
+- [Azure Blob Storage](/azure/well-architected/service-guides/azure-blob-storage) is scalable and secure object storage for unstructured data. You can use it for archives, data lakes, high-performance computing, machine learning, and cloud-native workloads. In this solution, Blob storage provides a local data store for the ML data store and a Premium data cache for training the ML model. The premium tier of Blob Storage is for workloads that require fast response times and high transaction rates, like the human-in-the-loop video labeling in this example.
+- [Data Lake Storage](/azure/storage/blobs/data-lake-storage-introduction) is a massively scalable and secure storage service for high-performance analytics workloads. The data typically comes from multiple heterogeneous sources and can be structured, semi-structured, or unstructured. Azure Data Lake Storage Gen2 combines Azure Data Lake Storage Gen1 capabilities with Blob Storage, and provides file system semantics, file-level security, and scale. It also offers the tiered storage, high availability, and disaster recovery capabilities of Blob Storage. In this solution, Data Lake Storage provides the archival video store for the raw video files and metadata.
+- [Azure Data Factory](/azure/data-factory/introduction) is a hybrid, fully managed, serverless solution for data integration and transformation workflows. It provides a code-free UI and an easy-to-use monitoring panel. Azure Data Factory uses pipelines for data movement. Mapping data flows perform various transformation tasks such as extract, transform, and load (ETL) and extract, load, and transform (ELT). In this example, Data Factory orchestrates the data in an ETL pipeline to the inferencing data, which it stores for retraining purposes.
+- [Azure Machine Learning](/azure/well-architected/service-guides/azure-machine-learning) is an enterprise-grade machine learning service for building and deploying models quickly. It provides users at all skill levels with a low-code designer, automated machine learning, and a hosted Jupyter notebook environment that supports various IDEs.
+- [Azure Pipelines](/azure/devops/pipelines/get-started/what-is-azure-pipelines), part of [Azure DevOps](/azure/devops/user-guide/what-is-azure-devops) team-based developer services, creates continuous integration (CI) and continuous deployment (CD) pipelines. In this example, the Azure Pipelines model orchestrator validates ML code, triggers serverless task pipelines, compares ML models, and builds the inferencing container.
+- [Container Registry](/azure/container-registry/container-registry-intro) creates and manages the Docker registry to build, store, and manage Docker container images, including containerized ML models.
+- [Azure Monitor](/azure/azure-monitor/overview) collects telemetry from Azure resources, so teams can proactively identify problems and maximize performance and reliability.
 
 ### Alternatives
 
@@ -65,17 +65,39 @@ Manufacturing processes use IoT computer vision in safety and quality assurance 
 
 ## Considerations
 
-These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/architecture/framework).
+These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/well-architected/).
 
-### Availability
+### Reliability
+
+Reliability ensures your application can meet the commitments you make to your customers. For more information, see [Design review checklist for Reliability](/azure/well-architected/reliability/checklist).
 
 ML-based applications typically require one set of resources for training and another for serving. Training resources generally don't need high availability, as live production requests don't directly use these resources. Resources required for serving requests need to have high availability.
 
-### Operations
+### Security
+
+Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Design review checklist for Security](/azure/well-architected/security/checklist).
+
+Access management in Dataverse and other Azure services helps ensure that only authorized users can access the environment, data, and reports. This solution uses Azure Key Vault to manage passwords and secrets. Storage is encrypted using [customer-managed keys](/azure/storage/common/customer-managed-keys-overview).
+
+For general guidance on designing secure IoT solutions, see the [Azure Security Documentation](/azure/security).
+
+### Cost Optimization
+
+Cost Optimization is about looking at ways to reduce unnecessary expenses and improve operational efficiencies. For more information, see [Design review checklist for Cost Optimization](/azure/well-architected/cost-optimization/checklist).
+
+In general, use the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator) to estimate costs. For other considerations, see [Cost optimization](/azure/architecture/framework/cost/index).
+
+Azure Machine Learning also deploys Container Registry, Azure Storage, and Azure Key Vault services, which incur extra costs. For more information, see [How Azure Machine Learning works: Architecture and concepts](/azure/machine-learning/concept-azure-machine-learning-architecture).
+
+Azure Machine Learning pricing includes charges for the virtual machines (VMs) used to train the model in the cloud. For information about availability of Azure Machine Learning and VMs per Azure region, see [Products available by region](https://azure.microsoft.com/global-infrastructure/services/?products=machine-learning-service,virtual-machines&regions=all).
+
+### Operational Excellence
+
+Operational Excellence covers the operations processes that deploy an application and keep it running in production. For more information, see [Design review checklist for Operational Excellence](/azure/well-architected/operational-excellence/checklist).
 
 This solution is divided into three operational areas:
 
-- In *IoT operations*, an ML model on the edge device uses real-time images from [connected cameras](../../guide/iot-edge-vision/camera.md) to inference video frames. The edge device also sends cached video streams to cloud storage to use for auditing and model retraining. After ML retraining, Azure IoT Hub updates the edge device with the new ML inferencing module.
+- In *IoT operations*, an ML model on the edge device uses real-time images from connected cameras to inference video frames. The edge device also sends cached video streams to cloud storage to use for auditing and model retraining. After ML retraining, Azure IoT Hub updates the edge device with the new ML inferencing module.
 
 - [MLOps](/azure/machine-learning/concept-model-management-and-deployment) uses DevOps practices to orchestrate model training, testing, and deployment operations. MLOps life cycle management automates the process of using ML models for complex decision-making, or *productionizing* the models. The key to MLOps is tight coordination among the teams that build, train, evaluate, and deploy the ML models.
 
@@ -95,7 +117,9 @@ This solution is divided into three operational areas:
 
   In this solution, IoT Hub ingests telemetry from the cameras and sends the metrics to Azure Monitor, so site engineers can investigate and troubleshoot. Azure Machine Learning sends observability metrics and model telemetry to Azure Monitor, helping the IoT engineers and data scientists to optimize operations.
 
-### Performance
+### Performance Efficiency
+
+Performance Efficiency is the ability of your workload to scale to meet the demands placed on it by users in an efficient manner. For more information, see [Design review checklist for Performance Efficiency](/azure/well-architected/performance-efficiency/checklist).
 
 IoT devices have limited memory and processing power, so it's important to limit the size of the model container sent to the device. Be sure to use an IoT device that can do model inference and produce results in an acceptable amount of time.
 
@@ -103,7 +127,7 @@ To optimize performance for training models, this example architecture uses [Azu
 
 Performance considerations also apply to the data ingestion pipeline. Data Factory maximizes data movement by providing a highly performant, cost-effective solution.
 
-### Scalability
+#### Scalability
 
 Most of the components used in this solution are managed services that automatically scale.
 
@@ -114,26 +138,6 @@ Scalability for the IoT application depends on [IoT Hub quotas and throttling](/
 - Ingestion and processing throughput.
 
 In ML, scalability refers to scale out clusters used to train models against large datasets. Scalability also enables the ML model to meet the demands of the applications that consume it. To meet these needs, the ML cluster must provide scale-out on CPUs and on graphics processing unit (GPU)-enabled nodes.
-
-For general guidance on designing scalable solutions, see the [performance efficiency checklist](/azure/architecture/framework/scalability/performance-efficiency) in the Azure Architecture Center.
-
-### Security
-
-Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Overview of the security pillar](/azure/architecture/framework/security/overview).
-
-Access management in Dataverse and other Azure services helps ensure that only authorized users can access the environment, data, and reports. This solution uses Azure Key Vault to manage passwords and secrets. Storage is encrypted using [customer-managed keys](/azure/storage/common/customer-managed-keys-overview).
-
-For general guidance on designing secure IoT solutions, see the [Azure Security Documentation](/azure/security) and the [Azure IoT reference architecture](../iot.yml#security).
-
-### Cost optimization
-
-Cost optimization is about looking at ways to reduce unnecessary expenses and improve operational efficiencies. For more information, see [Overview of the cost optimization pillar](/azure/architecture/framework/cost/overview).
-
-In general, use the [Azure pricing calculator](https://azure.microsoft.com/pricing/calculator) to estimate costs. For other considerations, see [Cost optimization](/azure/architecture/framework/cost/index).
-
-Azure Machine Learning also deploys Container Registry, Azure Storage, and Azure Key Vault services, which incur extra costs. For more information, see [How Azure Machine Learning works: Architecture and concepts](/azure/machine-learning/concept-azure-machine-learning-architecture).
-
-Azure Machine Learning pricing includes charges for the virtual machines (VMs) used to train the model in the cloud. For information about availability of Azure Machine Learning and VMs per Azure region, see [Products available by region](https://azure.microsoft.com/global-infrastructure/services/?products=machine-learning-service,virtual-machines&regions=all).
 
 ## Contributors
 
@@ -165,7 +169,3 @@ Principal Author:
 ## Related resources
 
 - [How Azure Machine Learning works: Architecture and concepts](/azure/machine-learning/concept-azure-machine-learning-architecture)
-- [Vision AI solutions with Azure IoT Edge](../../guide/iot-edge-vision/index.md)
-- [Azure IoT reference architecture](../iot.yml)
-- [DevOps Checklist](../../checklist/dev-ops.md)
-- [MLOps maturity model](../../ai-ml/guide/mlops-technical-paper.yml)

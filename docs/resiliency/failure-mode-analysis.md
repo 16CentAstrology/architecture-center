@@ -1,11 +1,12 @@
 ---
 title: Failure mode analysis
 description: Get information about doing a failure mode analysis (FMA) for cloud solutions that are based on Azure.
-author: martinekuan
+author: claytonsiemens77
+ms.author: csiemens
 ms.date: 07/25/2023
 ms.topic: conceptual
-ms.service: architecture-center
-ms.subservice: well-architected
+ms.service: azure-architecture-center
+ms.subservice: architecture-guide
 azureCategories: management-and-governance
 categories: management-and-governance
 products:
@@ -31,6 +32,9 @@ Here is the general process to conduct an FMA:
 4. For each failure mode, determine how the application will respond and recover. Consider tradeoffs in cost and application complexity.
 
 As a starting point for your FMA process, this article contains a catalog of potential failure modes and their mitigation steps. The catalog is organized by technology or Azure service, plus a general category for application-level design. The catalog is not exhaustive, but covers many of the core Azure services.
+
+> [!NOTE]
+> Failures should be distinguished from errors. A failure is an unexpected event within a system that prevents it from continuing to function normally. For example, a hardware malfunction that causes a network partition is a failure. Usually, failures require intervention or specific design for that class of failures. In contrast, errors are an expected part of normal operations, are dealt with immediately and the system will continue to operate at the same capacity following an error. For example, errors discovered during input validation can be handled through business logic.
 
 ## App Service
 
@@ -77,15 +81,17 @@ Application_End logging will catch the app domain shutdown (soft process crash) 
 
 **Recovery:**. Use multiple [deployment slots][app-service-slots] and roll back to the last-known-good deployment. For more information, see [Basic web application][ra-web-apps-basic].
 
-## Azure Active Directory
+<a name='azure-active-directory'></a>
+
+## Microsoft Entra ID
 
 ### OpenID Connect authentication fails.
 
 **Detection**. Possible failure modes include:
 
-1. Azure AD is not available, or cannot be reached due to a network problem. Redirection to the authentication endpoint fails, and the OpenID Connect middleware throws an exception.
-2. Azure AD tenant does not exist. Redirection to the authentication endpoint returns an HTTP error code, and the OpenID Connect middleware throws an exception.
-3. User cannot authenticate. No detection strategy is necessary; Azure AD handles login failures.
+1. Microsoft Entra ID is not available, or cannot be reached due to a network problem. Redirection to the authentication endpoint fails, and the OpenID Connect middleware throws an exception.
+2. Microsoft Entra tenant does not exist. Redirection to the authentication endpoint returns an HTTP error code, and the OpenID Connect middleware throws an exception.
+3. User cannot authenticate. No detection strategy is necessary; Microsoft Entra ID handles login failures.
 
 **Recovery:**
 
@@ -329,28 +335,6 @@ For more information, see [Overview of Service Bus dead-letter queues][sb-dead-l
 
 **Diagnostics**. Whenever the application moves a message to the dead-letter queue, write an event to the application logs.
 
-## Service Fabric
-
-### A request to a service fails.
-
-**Detection**. The service returns an error.
-
-**Recovery:**
-
-- Locate a proxy again (`ServiceProxy` or `ActorProxy`) and call the service/actor method again.
-- **Stateful service**. Wrap operations on reliable collections in a transaction. If there is an error, the transaction will be rolled back. The request, if pulled from a queue, will be processed again.
-- **Stateless service**. If the service persists data to an external store, all operations need to be idempotent.
-
-**Diagnostics**. Application log
-
-### Service Fabric node is shut down.
-
-**Detection**. A cancellation token is passed to the service's `RunAsync` method. Service Fabric cancels the task before shutting down the node.
-
-**Recovery**. Use the cancellation token to detect shutdown. When Service Fabric requests cancellation, finish any work and exit `RunAsync` as quickly as possible.
-
-**Diagnostics**. Application logs
-
 ## Storage
 
 ### Writing data to Azure Storage fails
@@ -443,7 +427,7 @@ For more information, see [Overview of Service Bus dead-letter queues][sb-dead-l
 
 **Diagnostics**. Use [App Service diagnostic logging][app-service-logging]. Use a service such as [Azure Log Analytics][azure-log-analytics], [Application Insights][app-insights], or [New Relic][new-relic] to help understand the diagnostic logs.
 
-:::image type="icon" source="../_images/github.png" border="false"::: A sample is available [here](https://github.com/mspnp/samples/tree/master/Reliability/FailureModeAnalysisSample). It uses [Polly](https://github.com/App-vNext/Polly) for these exceptions:
+:::image type="icon" source="../_images/github.png" border="false"::: A sample is available [here](https://github.com/mspnp/samples/tree/main/Reliability/FailureModeAnalysisSample). It uses [Polly](https://github.com/App-vNext/Polly) for these exceptions:
 
 - 429 - Throttling
 - 408 - Timeout
@@ -487,7 +471,7 @@ See [Resiliency and dependencies](/azure/well-architected/resiliency/design-resi
 [app-service-configure]: /azure/app-service-web/web-sites-configure
 [app-service-logging]: /azure/app-service-web/web-sites-enable-diagnostic-log
 [app-service-slots]: /azure/app-service-web/web-sites-staged-publishing
-[auto-rest-client-retry]: https://github.com/Azure/autorest/tree/master/docs
+[auto-rest-client-retry]: https://github.com/Azure/autorest/tree/main/docs
 [azure-activity-logs]: /azure/monitoring-and-diagnostics/monitoring-overview-activity-logs
 [azure-alerts]: /azure/monitoring-and-diagnostics/insights-alerts-portal
 [azure-log-analytics]: /azure/log-analytics/log-analytics-overview

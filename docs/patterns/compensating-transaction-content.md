@@ -25,7 +25,7 @@ Two important points are:
 
 This approach is similar to the Sagas strategy that's discussed in [Clemens Vasters' blog](https://vasters.com/archive/Sagas.html).
 
-A compensating transaction is an eventually consistent operation itself, so it can also fail. The system should be able to resume the compensating transaction at the point of failure and continue. It might be necessary to repeat a step that fails, so you should define the steps in a compensating transaction as idempotent commands. For more information, see [Idempotency Patterns](https://blog.jonathanoliver.com/idempotency-patterns) on Jonathan Oliver's blog.
+A compensating transaction is an eventually consistent operation itself, so it can also fail. The system should be able to resume the compensating transaction at the point of failure and continue. It might be necessary to repeat a step that fails, so you should define the steps in a compensating transaction as [idempotent commands](/azure/architecture/reference-architectures/containers/aks-mission-critical/mission-critical-data-platform#idempotent-message-processing). For more information, see [Idempotency Patterns](https://blog.jonathanoliver.com/idempotency-patterns) on Jonathan Oliver's blog.
 
 In some cases, manual intervention might be the only way to recover from a step that has failed. In these situations, the system should raise an alert and provide as much information as possible about the reason for the failure.
 
@@ -37,7 +37,7 @@ Consider the following points when you decide how to implement this pattern:
 
 - It's not easy to generalize compensation logic. A compensating transaction is application-specific. It relies on the application having sufficient information to be able to undo the effects of each step in a failed operation.
 
-- You should define the steps in a compensating transaction as idempotent commands. If you do, the steps can be repeated if the compensating transaction itself fails.
+- Compensating transactions don't always work. You should define the steps in a compensating transaction as idempotent commands. If you do, the steps can be repeated if the compensating transaction itself fails.
 
 - The infrastructure that handles the steps must meet the following criteria:
   - It's resilient in the original operation and in the compensating transaction.
@@ -57,6 +57,16 @@ Consider the following points when you decide how to implement this pattern:
 ## When to use this pattern
 
 Use this pattern only for operations that must be undone if they fail. If possible, design solutions to avoid the complexity of requiring compensating transactions.
+
+## Workload design
+
+An architect should evaluate how the Compensating Transaction pattern can be used in their workload's design to address the goals and principles covered in the [Azure Well-Architected Framework pillars](/azure/well-architected/pillars). For example:
+
+| Pillar | How this pattern supports pillar goals |
+| :----- | :------------------------------------- |
+| [Reliability](/azure/well-architected/reliability/checklist) design decisions help your workload become **resilient** to malfunction and to ensure that it **recovers** to a fully functioning state after a failure occurs. | Compensation actions address malfunctions in critical workload paths by using processes like directly rolling back data changes, breaking transaction locks, or even executing native system behavior to reverse the effect.<br/><br/> - [RE:02 Critical flows](/azure/well-architected/reliability/identify-flows)<br/> - [RE:09 Disaster recovery](/azure/well-architected/reliability/disaster-recovery) |
+
+As with any design decision, consider any tradeoffs against the goals of the other pillars that might be introduced with this pattern.
 
 ## Example
 
@@ -90,6 +100,6 @@ In many business solutions, failure of a single step doesn't always necessitate 
 
 - [Scheduler Agent Supervisor pattern](./scheduler-agent-supervisor.yml). This article describes how to implement resilient systems that perform business operations that use distributed services and resources. In these systems, you sometimes need to use a compensating transaction to undo the work that an operation performs.
 - [Retry pattern](./retry.yml). Compensating transactions can be computationally demanding. You can try to minimize their use by using the Retry pattern to implement an effective policy of retrying failed operations.
-- [Saga distributed transactions pattern](../reference-architectures/saga/saga.yml). This article explains how to use the Saga pattern to manage data consistency across microservices in distributed transaction scenarios. The Saga pattern handles failure recovery with compensating transactions.
+- [Saga distributed transactions pattern](./saga.yml). This article explains how to use the Saga pattern to manage data consistency across microservices in distributed transaction scenarios. The Saga pattern handles failure recovery with compensating transactions.
 - [Pipes and Filters pattern](./pipes-and-filters.yml). This article describes the Pipes and Filters pattern, which you can use to decompose a complex processing task into a series of reusable elements. You can use the Pipes and Filters pattern with the Compensating Transaction pattern as an alternative to implementing distributed transactions.
 - [Design for self healing](../guide/design-principles/self-healing.md). This guide explains how to design self-healing applications. You can use compensating transactions as part of a self-healing approach.

@@ -11,7 +11,7 @@ To learn more about pre-migration evaluations and discover common strategies, se
 
 ## Architecture
 
-The first step to migrating your IoT solution to Azure is understanding Azure IoT services. The following diagram describes Azure components and services that IoT solutions commonly use, but no single solution uses all of these components. For more information about key components and this reference architecture, see [Azure IoT reference architecture](../../reference-architectures/iot.yml).
+The first step to migrating your IoT solution to Azure is understanding Azure IoT services. The following diagram describes Azure components and services that IoT solutions commonly use, but no single solution uses all of these components. 
 
 :::image type="content" source="media/azure-iot-reference-architecture.png" alt-text="This diagram shows the Azure IoT reference architecture." lightbox="media/azure-iot-reference-architecture.png" border="false":::
 
@@ -41,7 +41,7 @@ Azure IoT solutions involve:
 - Insights that you form about the data
 - Actions that you take based on insights
 
-For example, a motor sends temperature data. Use this data to evaluate whether the motor performs as expected. Use the insight about the motor's performance to prioritize its maintenance schedule. For more information, see [Azure IoT reference architecture](../../reference-architectures/iot.yml#architecture).
+For example, a motor sends temperature data. Use this data to evaluate whether the motor performs as expected. Use the insight about the motor's performance to prioritize its maintenance schedule. 
 
 During a migration to Azure IoT, these elements are the main components that you must understand how to migrate:
 
@@ -131,7 +131,7 @@ The [MQTT samples for Azure IoT](https://github.com/Azure-Samples/IoTMQTTSample)
 
 The REST API for IoT Hub offer programmatic access to the device, messaging, and job services in IoT Hub. It also offers access to the resource provider. You can access messaging services from within an IoT service running in Azure, or directly over the Internet from any application that can send an HTTPS request and receive an HTTPS response. For more information, see [IoT Hub REST](/rest/api/iothub).
 
-If your device requires the use of the HTTPS REST API without IoT Hub SDKs, Azure IoT Hub supports an HTTP REST API. You can use this API for sending and receiving messages. Use these APIs from a device to send device-to-cloud messages to an IoT hub or receive cloud-to-device messages from an IoT hub. All task operations conform to the HTTP/1.1 protocol specification. Make sure that requests made to these resources are secure. For more information, see [Device](/rest/api/iothub/device).
+If your device requires the use of the HTTPS REST API without IoT Hub SDKs, Azure IoT Hub supports an HTTP REST API. You can use this API for sending and receiving messages. Use these APIs from a device to send device-to-cloud messages to an IoT hub or receive cloud-to-device messages from an IoT hub. All task operations conform to the HTTP/1.1 protocol specification. Make sure that requests made to these resources are secure. For more information, see [Device](/rest/api/iothub/service/devices/get-devices).
 
 ### Endpoint
 
@@ -329,8 +329,5 @@ Here are examples of architectures and quick starts to understand how to use Azu
 
 ## Related resources
 
-- [Get started with Azure IoT solutions](../../reference-architectures/iot/iot-architecture-overview.md)
-- [Azure IoT reference architecture](../../reference-architectures/iot.yml)
-- [Create smart places by using Azure Digital Twins](../../example-scenario/iot/smart-places.yml)
+- [IoT architectures](/azure/architecture/browse/?azure_categories=iot)
 - [Industrial IoT Patterns](../iiot-patterns/iiot-patterns-overview.yml)
-- [Video capture and analytics for retail](../../solution-ideas/articles/video-analytics.yml)

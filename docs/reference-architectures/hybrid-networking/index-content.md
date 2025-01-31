@@ -57,7 +57,7 @@ This architecture is suitable for hybrid applications running large-scale, missi
 
 ### Reference architecture
 
-- [Hybrid network with ExpressRoute](./expressroute.yml)
+- [Hybrid network with ExpressRoute](./expressroute-vpn-failover.yml)
 
 ## ExpressRoute with VPN failover
 
@@ -82,4 +82,4 @@ This architecture is suitable for hybrid applications that need the high bandwid
 
 ### Reference architectures
 
-- [Hub-spoke topology](./hub-spoke.yml)
+- [Hub-spoke topology](../../networking/architecture/hub-spoke.yml)

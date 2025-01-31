@@ -14,19 +14,19 @@ If you would prefer to see a more advanced microservices example that is built u
 
 The architecture consists of the following components.
 
-**Azure Kubernetes Service** (AKS). AKS is a managed Kubernetes cluster hosted in the Azure cloud. Azure manages the Kubernetes API service, and you only need to manage the agent nodes.
+**Azure Kubernetes Service (AKS)**. AKS is a managed Kubernetes cluster hosted in the Azure cloud. Azure manages the Kubernetes API service, and you only need to manage the agent nodes.
 
 **Virtual network**. By default, AKS creates a virtual network into which agent nodes are connected. You can create the virtual network first for more advanced scenarios, which lets you control things like subnet configuration, on-premises connectivity, and IP addressing. For more information, see [Configure advanced networking in Azure Kubernetes Service (AKS)](/azure/aks/configure-advanced-networking).
 
 **Ingress**. An ingress server exposes HTTP(S) routes to services inside the cluster. For more information, see the section [API Gateway](#api-gateway) below.
 
-**Azure Load Balancer**. After creating an AKS cluster, the cluster is ready to use the load balancer. Then, once the NGINX service is deployed, the load balancer will be configured with a new public IP that will front your ingress controller. This way, the load balancer routes internet traffic to the ingress.
+**Azure Load Balancer**. After you create an AKS cluster, the cluster is ready to use the load balancer. Then, once the NGINX service is deployed, the load balancer will be configured with a new public IP that will front your ingress controller. This way, the load balancer routes internet traffic to the ingress.
 
 **External data stores**. Microservices are typically stateless and write state to external data stores, such as Azure SQL Database or Azure Cosmos DB.
 
-**Azure Active Directory**. AKS uses an Azure Active Directory (Azure AD) identity to create and manage other Azure resources such as Azure load balancers. Azure AD is also recommended for user authentication in client applications.
+**Microsoft Entra ID**. AKS uses a Microsoft Entra identity to create and manage other Azure resources such as Azure load balancers. Microsoft Entra ID is also recommended for user authentication in client applications.
 
-**Azure Container Registry**. Use Container Registry to store private Docker images, which are deployed to the cluster. AKS can authenticate with Container Registry using its Azure AD identity. AKS doesn't require Azure Container Registry. You can use other container registries, such as Docker Hub.  Just ensure your container registry matches or exceeds the service level agreement (SLA) for your workload.
+**Azure Container Registry**. Use Container Registry to store private Docker images, which are deployed to the cluster. AKS can authenticate with Container Registry using its Microsoft Entra identity. AKS doesn't require Azure Container Registry. You can use other container registries, such as Docker Hub.  Just ensure your container registry matches or exceeds the service level agreement (SLA) for your workload.
 
 **Azure Pipelines**. Azure Pipelines are part of the Azure DevOps Services and run automated builds, tests, and deployments. You can also use third-party CI/CD solutions such as Jenkins.
 
@@ -35,6 +35,8 @@ The architecture consists of the following components.
 **Azure Monitor**. Azure Monitor collects and stores metrics and logs, application telemetry, and platform metrics for the Azure services. Use this data to monitor the application, set up alerts, dashboards, and perform root cause analysis of failures. Azure Monitor integrates with AKS to collect metrics from controllers, nodes, and containers.
 
 ## Considerations
+
+These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/well-architected/).
 
 ### Design
 
@@ -49,7 +51,7 @@ A microservice is a loosely coupled, independently deployable unit of code. Micr
 API gateways are a general [microservices design pattern](https://microservices.io/patterns/apigateway.html). An *API gateway* sits between external clients and the microservices. It acts as a reverse proxy, routing requests from clients to microservices. It may also perform various cross-cutting tasks such as authentication, SSL termination, and rate-limiting. For more information, see:
 
 - [Using API gateways in microservices](../../../microservices/design/gateway.yml)
-- [Choosing a gateway technology](../../../microservices/design/gateway.yml#choosing-a-gateway-technology)
+- [Choose an API gateway technology](../../../microservices/design/gateway.yml#choose-an-api-gateway-technology)
 
 In Kubernetes, the functionality of an API gateway is primarily handled by an **Ingress controller**. The considerations are described in the [Ingress](#ingress) section.
 
@@ -93,10 +95,10 @@ The Ingress resource can be fulfilled by different technologies. To work togethe
 
 Often, configuring the proxy server requires complex files, which can be hard to tune if you aren't an expert. So, the Ingress controller provides a nice abstraction. The Ingress controller also has access to the Kubernetes API, so it can make intelligent decisions about routing and load balancing. For example, the Nginx ingress controller bypasses the kube-proxy network proxy.
 
-On the other hand, if you need complete control over the settings, you may want to bypass this abstraction and configure the proxy server manually. For more information, see [Deploying Nginx or HAProxy to Kubernetes](../../../microservices/design/gateway.yml#deploying-nginx-or-haproxy-to-kubernetes).
+On the other hand, if you need complete control over the settings, you may want to bypass this abstraction and configure the proxy server manually.
 
 > [!NOTE]
-> For AKS, you can also use Azure Application Gateway, using the [Application Gateway Ingress Controller](/azure/application-gateway/ingress-controller-overview) (AGIC). Azure Application Gateway can perform layer-7 routing and SSL termination. It also has built-in support for web application firewall (WAF). If your AKS cluster is using [CNI networking](/azure/aks/configure-azure-cni/), Application Gateway can be deployed into a subnet of the cluster's virtual network or can be deployed in different virtual network from AKS virtual network, however, the two virtual networks must be peered together. AGIC also supports the Kubenet network plugin. When using Kubenet mode, the ingress controller needs to manage a route table in the Application Gateway's subnet to direct traffic to pod IPs. For more information, see [How to setup networking between Application Gateway and AKS](https://azure.github.io/application-gateway-kubernetes-ingress/how-tos/networking/).
+> For AKS, you can also use Azure Application Gateway, using the [Application Gateway Ingress Controller (AGIC)](/azure/application-gateway/ingress-controller-overview). Azure Application Gateway can perform layer-7 routing and SSL termination. It also has built-in support for Web Application Firewall. If your AKS cluster is using [CNI networking](/azure/aks/configure-azure-cni/), Application Gateway can be deployed into a subnet of the cluster's virtual network or can be deployed in different virtual network from AKS virtual network, however, the two virtual networks must be peered together. AGIC also supports the Kubenet network plugin. When using Kubenet mode, the ingress controller needs to manage a route table in the Application Gateway's subnet to direct traffic to pod IPs. For more information, see [How to setup networking between Application Gateway and AKS](https://azure.github.io/application-gateway-kubernetes-ingress/how-tos/networking/).
 
 For information about load-balancing services in Azure, see [Overview of load-balancing options in Azure](../../../guide/technology-choices/load-balancing-overview.yml).
 
@@ -153,6 +155,8 @@ Use resource quotas to limit the total resources allowed for a namespace. That w
 
 ### Security
 
+Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Design review checklist for Security](/azure/well-architected/security/checklist).
+
 #### Role-based access control (RBAC)
 
 Kubernetes and Azure both have mechanisms for role-based access control (RBAC):
@@ -161,21 +165,21 @@ Kubernetes and Azure both have mechanisms for role-based access control (RBAC):
 
 - Kubernetes RBAC controls permissions to the Kubernetes API. For example, creating pods and listing pods are actions that can be authorized (or denied) to a user through Kubernetes RBAC. To assign Kubernetes permissions to users, you create *roles* and *role bindings*:
 
-  - A Role is a set of permissions that apply within a namespace. Permissions are defined as verbs (get, update, create, delete) on resources (pods, deployments, etc.).
+  - A Role is a set of permissions that apply within a namespace. Permissions are defined as verbs (get, update, create, delete) on resources (pods, deployments, and so on).
 
   - A RoleBinding assigns users or groups to a Role.
 
   - There's also a ClusterRole object, which is like a Role but applies to the entire cluster, across all namespaces. To assign users or groups to a ClusterRole, create a ClusterRoleBinding.
 
-AKS integrates these two RBAC mechanisms. When you create an AKS cluster, you can configure it to use Azure AD for user authentication. For details on how to set this up, see [Integrate Azure Active Directory with Azure Kubernetes Service](/azure/aks/aad-integration).
+AKS integrates these two RBAC mechanisms. When you create an AKS cluster, you can configure it to use Microsoft Entra ID for user authentication. For details on how to set this up, see [Integrate Microsoft Entra ID with Azure Kubernetes Service](/azure/aks/aad-integration).
 
-Once this is configured, a user who wants to access the Kubernetes API (for example, through kubectl) must sign in using their Azure AD credentials.
+Once this is configured, a user who wants to access the Kubernetes API (for example, through kubectl) must sign in using their Microsoft Entra credentials.
 
-By default, an Azure AD user has no access to the cluster. To grant access, the cluster administrator creates RoleBindings that refer to Azure AD users or groups. If a user doesn't have permissions for a particular operation, it will fail.
+By default, a Microsoft Entra user has no access to the cluster. To grant access, the cluster administrator creates RoleBindings that refer to Microsoft Entra users or groups. If a user doesn't have permissions for a particular operation, it will fail.
 
 If users have no access by default, how does the cluster admin have permission to create the role bindings in the first place? An AKS cluster actually has two types of credentials for calling the Kubernetes API server: cluster user and cluster admin. The cluster admin credentials grant full access to the cluster. The Azure CLI command `az aks get-credentials --admin` downloads the cluster admin credentials and saves them into your kubeconfig file. The cluster administrator can use this kubeconfig to create roles and role bindings.
 
-Instead of managing Kubernetes cluster Role and RoleBinding objects natively in Kubernetes, it is preferred to use [Azure RBAC for Kubernetes Authorization](/azure/aks/manage-azure-rbac). This allows for the unified management and access control across Azure Resources, AKS, and Kubernetes resources. These Azure RBAC role assignments can target the cluster or namespaces within the cluster for more fine-grained access control. Azure RBAC supports a limited set of default permissions, and you can combine it with the native Kubernetes mechanism of managing Role and RoleBindings to support advanced or more granular access patterns. When enabled, Azure AD principals will be validated exclusively by Azure RBAC while regular Kubernetes users and service accounts are exclusively validated by Kubernetes RBAC.
+Instead of managing Kubernetes cluster Role and RoleBinding objects natively in Kubernetes, it is preferred to use [Azure RBAC for Kubernetes Authorization](/azure/aks/manage-azure-rbac). This allows for the unified management and access control across Azure Resources, AKS, and Kubernetes resources. These Azure RBAC role assignments can target the cluster or namespaces within the cluster for more fine-grained access control. Azure RBAC supports a limited set of default permissions, and you can combine it with the native Kubernetes mechanism of managing Role and RoleBindings to support advanced or more granular access patterns. When enabled, Microsoft Entra principals will be validated exclusively by Azure RBAC while regular Kubernetes users and service accounts are exclusively validated by Kubernetes RBAC.
 
 Because the cluster admin credentials are so powerful, use Azure RBAC to restrict access to them:
 
@@ -191,15 +195,15 @@ When you define your RBAC policies (both Kubernetes and Azure), think about the 
 
 It's a good practice to scope Kubernetes RBAC permissions by namespace, using Roles and RoleBindings, rather than ClusterRoles and ClusterRoleBindings.
 
-Finally, there's the question of what permissions the AKS cluster has to create and manage Azure resources, such as load balancers, networking, or storage. To authenticate itself with Azure APIs, the cluster uses an Azure AD service principal. If you don't specify a service principal when you create the cluster, one is created automatically. However, it's a good security practice to create the service principal first and assign the minimal RBAC permissions to it. For more information, see [Service principals with Azure Kubernetes Service](/azure/aks/kubernetes-service-principal).
+Finally, there's the question of what permissions the AKS cluster has to create and manage Azure resources, such as load balancers, networking, or storage. To authenticate itself with Azure APIs, the cluster uses a Microsoft Entra service principal. If you don't specify a service principal when you create the cluster, one is created automatically. However, it's a good security practice to create the service principal first and assign the minimal RBAC permissions to it. For more information, see [Service principals with Azure Kubernetes Service](/azure/aks/kubernetes-service-principal).
 
 #### Secrets management and application credentials
 
 Applications and services often need credentials that allow them to connect to external services such as Azure Storage or SQL Database. The challenge is to keep these credentials safe and not leak them.
 
-For Azure resources, one option is to use managed identities. The idea of a managed identity is that an application or service has an identity stored in Azure AD, and uses this identity to authenticate with an Azure service. The application or service has a Service Principal created for it in Azure AD, and authenticates using OAuth 2.0 tokens. The executing process code can transparently get the token to use. That way, you don't need to store any passwords or connection strings. You can use managed identities in AKS by assigning Azure AD identities to individual pods, using [Azure AD workload identities](/azure/aks/workload-identity-overview) (preview).
+For Azure resources, one option is to use managed identities. The idea of a managed identity is that an application or service has an identity stored in Microsoft Entra ID, and uses this identity to authenticate with an Azure service. The application or service has a Service Principal created for it in Microsoft Entra ID, and authenticates using OAuth 2.0 tokens. The executing process code can transparently get the token to use. That way, you don't need to store any passwords or connection strings. You can use managed identities in AKS by assigning Microsoft Entra identities to individual pods, using [Microsoft Entra Workload ID](/azure/aks/workload-identity-overview) (preview).
 
-Currently, not all Azure services support authentication using managed identities. For a list, see [Azure services that support Azure AD authentication](/azure/active-directory/managed-identities-azure-resources/services-support-msi).
+Currently, not all Azure services support authentication using managed identities. For a list, see [Azure services that support Microsoft Entra authentication](/azure/active-directory/managed-identities-azure-resources/services-support-msi).
 
 Even with managed identities, you'll probably need to store some credentials or other application secrets, whether for Azure services that don't support managed identities, third-party services, API keys, and so on. Here are some options for storing secrets securely:
 
@@ -207,7 +211,7 @@ Even with managed identities, you'll probably need to store some credentials or 
 
     The pod authenticates itself by using either a workload identity or by using a user or system-assigned managed identity. See [Provide an identity to access the Azure Key Vault Provider for Secrets Store CSI Driver](/azure/aks/csi-secrets-store-identity-access) for more considerations.
 
-- HashiCorp Vault. Kubernetes applications can authenticate with HashiCorp Vault using Azure AD managed identities. See [HashiCorp Vault speaks Azure Active Directory](https://open.microsoft.com/2018/04/10/scaling-tips-hashicorp-vault-azure-active-directory/). You can deploy Vault itself to Kubernetes, consider running it in a separate dedicated cluster from your application cluster.
+- HashiCorp Vault. Kubernetes applications can authenticate with HashiCorp Vault using Microsoft Entra managed identities. See [HashiCorp Vault speaks Microsoft Entra ID](https://open.microsoft.com/2018/04/10/scaling-tips-hashicorp-vault-azure-active-directory/). You can deploy Vault itself to Kubernetes, consider running it in a separate dedicated cluster from your application cluster.
 
 - Kubernetes secrets. Another option is simply to use Kubernetes secrets. This option is the easiest to configure but has some challenges. Secrets are stored in etcd, which is a distributed key-value store. AKS [encrypts etcd at rest](https://github.com/Azure/kubernetes-kms#azure-kubernetes-service-aks). Microsoft manages the encryption keys.
 
@@ -232,12 +236,6 @@ These are recommended practices for securing your pods and containers:
   - Don't run containers in privileged mode. Privileged mode gives a container access to all devices on the host.
   - When possible, avoid running processes as root inside containers. Containers do not provide complete isolation from a security standpoint, so it's better to run a container process as a non-privileged user.
 
-### DevOps
-
-This reference architecture provides an [Azure Resource Manager template](/azure/azure-resource-manager/templates/overview) for provisioning the cloud resources, and its dependencies. With the use of [Azure Resource Manager templates][arm-template] you can use [Azure DevOps Services](/azure/devops/user-guide/services) to provision different environments in minutes, for example to replicate production scenarios. This allows you to save cost and provision load testing environment only when needed.
-
-Consider following the workload isolation criteria to structure your ARM template, a workload is typically defined as an arbitrary unit of functionality; you could, for example, have a separate template for the cluster and then other for the dependant services. Workload isolation enables DevOps to perform continuous integration and continuous delivery (CI/CD), since every workload is associated and managed by its corresponding DevOps team.
-
 ### Deployment (CI/CD) considerations
 
 Here are some goals of a robust CI/CD process for a microservices architecture:
@@ -252,7 +250,9 @@ To learn more about the challenges, see [CI/CD for microservices architectures](
 
 For specific recommendations and best practices, see [CI/CD for microservices on Kubernetes](../../../microservices/ci-cd-kubernetes.yml).
 
-### Cost optimization
+### Cost Optimization
+
+Cost Optimization is about looking at ways to reduce unnecessary expenses and improve operational efficiencies. For more information, see [Design review checklist for Cost Optimization](/azure/well-architected/cost-optimization/checklist).
 
 Use the [Azure pricing calculator][azure-pricing-calculator] to estimate costs. Other considerations are described in the Cost section in [Microsoft Azure Well-Architected Framework][aaf-cost].
 
@@ -278,6 +278,14 @@ This reference architecture only uses Azure Pipelines. Azure offers the Azure Pi
 
 For Azure Monitor Log Analytics, you're charged for data ingestion and retention. For more information, see [Azure Monitor Pricing][az-monitor-pricing].
 
+### Operational Excellence
+
+Operational Excellence covers the operations processes that deploy an application and keep it running in production. For more information, see [Design review checklist for Operational Excellence](/azure/well-architected/operational-excellence/checklist).
+
+This reference architecture provides an [Azure Resource Manager template](/azure/azure-resource-manager/templates/overview) for provisioning the cloud resources, and its dependencies. With the use of [Azure Resource Manager templates][arm-template] you can use [Azure DevOps Services](/azure/devops/user-guide/services) to provision different environments in minutes, for example to replicate production scenarios. This allows you to save cost and provision load testing environment only when needed.
+
+Consider following the workload isolation criteria to structure your ARM template, a workload is typically defined as an arbitrary unit of functionality; you could, for example, have a separate template for the cluster and then other for the dependent services. Workload isolation enables DevOps to perform continuous integration and continuous delivery (CI/CD), since every workload is associated and managed by its corresponding DevOps team.
+
 ## Deploy this scenario
 
 To deploy the reference implementation for this architecture, follow the steps in the [GitHub repo][ri-deploy].
@@ -298,7 +306,6 @@ To deploy the reference implementation for this architecture, follow the steps i
 ## Related resources
 
 - To work through a more advanced microservices example, see [Advanced Azure Kubernetes Service (AKS) microservices architecture](./aks-microservices-advanced.yml)
-- To learn about monitoring this architecture, see [Monitoring a microservices architecture in Azure Kubernetes Service (AKS)](../../../microservices/logging-monitoring.yml).
 - To learn how we measured the performance of this application, see [Performance tuning scenario: Distributed business transactions](../../../performance/distributed-transaction.yml).
 - [CI/CD for microservices architectures](../../../microservices/ci-cd.yml)
 - [CI/CD for microservices on Kubernetes](../../../microservices/ci-cd-kubernetes.yml) 

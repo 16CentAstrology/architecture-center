@@ -38,7 +38,7 @@ The following workflow corresponds to the preceding diagram:
 
 1. Data is typically input from users, either from the internet or an intranet.
 
-1. User access to the application is now enabled via a web-based presentation layer with the help of an application created with Power Apps, and validation is integrated with Azure Active Directory for a seamless sign-on experience. If validated, the user can access a specific Power Apps when they sign in to the Power Platform. User access is enabled using the Mainframe ID and password, which is validated against the mainframe with Verastream. (The 2b and 3b flow is an [alternative](#alternatives) workflow addressed later in this article.)
+1. User access to the application is now enabled via a web-based presentation layer with the help of an application created with Power Apps, and validation is integrated with Microsoft Entra ID for a seamless sign-on experience. If validated, the user can access a specific Power Apps when they sign in to the Power Platform. User access is enabled using the Mainframe ID and password, which is validated against the mainframe with Verastream. (The 2b and 3b flow is an [alternative](#alternatives) workflow addressed later in this article.)
 
 1. Application functionality is enabled by defining custom connectors. The custom connector definitions contain the corresponding Verastream APIs configured in Verastream Host Integrator software.
 
@@ -62,19 +62,19 @@ The following workflow corresponds to the preceding diagram:
 
 ### Components
 
-- [Power Platform](https://powerplatform.microsoft.com) increases agility across your organization by helping you build low-code apps that modernize processes and solve tough challenges.
+- [Power Platform](/power-platform) increases agility across your organization by helping you build low-code apps that modernize processes and solve tough challenges.
 
-- [Azure API Management](https://azure.microsoft.com/services/api-management) provides a hybrid, multicloud management platform for APIs across all environments. APIs enable digital experiences, simplify application integration, underpin new digital products, and make data and services reusable and universally accessible.
+- [Azure API Management](/azure/well-architected/service-guides/api-management/reliability) provides a hybrid, multicloud management platform for APIs across all environments. APIs enable digital experiences, simplify application integration, underpin new digital products, and make data and services reusable and universally accessible.
 
-- [Azure Monitor](https://azure.microsoft.com/services/monitor) helps maximize the availability and performance of your applications and services. It's a comprehensive solution for collecting, analyzing, and acting on customer data from your cloud and on-premises environments. This information helps you understand how your applications perform and proactively identify issues that affect them and the resources they depend on.
+- [Azure Monitor](/azure/azure-monitor/overview) helps maximize the availability and performance of your applications and services. It's a comprehensive solution for collecting, analyzing, and acting on customer data from your cloud and on-premises environments. This information helps you understand how your applications perform and proactively identify issues that affect them and the resources they depend on.
 
-- [Azure Virtual Machines](https://azure.microsoft.com/services/virtual-machines) is one of several Azure services that provide on-demand, scalable computing resources. With Azure VMs, you get the flexibility of virtualization without having to buy and maintain physical hardware.
+- [Azure Virtual Machines](/azure/well-architected/service-guides/virtual-machines) is one of several Azure services that provide on-demand, scalable computing resources. With Azure VMs, you get the flexibility of virtualization without having to buy and maintain physical hardware.
 
-- [Microsoft Azure Virtual Network](https://azure.microsoft.com/services/virtual-network) is the fundamental building block for Azure private networks. Virtual Network lets many types of Azure resources, such as VMs, communicate with each other, the internet, and on-premises networks. Virtual Network is similar to a traditional network that you'd operate in your own datacenter but offers Azure infrastructure benefits like scalability, availability, and isolation.
+- [Azure Virtual Network](/azure/well-architected/service-guides/azure-virtual-network/reliability) is the fundamental building block for Azure private networks. Virtual Network lets many types of Azure resources, such as VMs, communicate with each other, the internet, and on-premises networks. Virtual Network is similar to a traditional network that you'd operate in your own datacenter but offers Azure infrastructure benefits like scalability, availability, and isolation.
 
-- [Azure ExpressRoute](https://azure.microsoft.com/services/expressroute) extends an on-premises network into Microsoft cloud services over a private connection, facilitated by a connectivity provider. With ExpressRoute, you can establish connections to Microsoft cloud services, such as Microsoft Azure and Office 365.
+- [Azure ExpressRoute](/azure/well-architected/service-guides/azure-expressroute) extends an on-premises network into Microsoft cloud services over a private connection, facilitated by a connectivity provider. With ExpressRoute, you can establish connections to Microsoft cloud services, such as Microsoft Azure and Office 365.
 
-- [Azure Kubernetes Service (AKS)](https://azure.microsoft.com/services/kubernetes-service) simplifies deploying managed Kubernetes clusters in Azure by offloading the operational overhead to Azure. AKS helps you deploy and manage the containerized components in this architecture, including your custom-made web UI applications. Because Kubernetes masters are managed by Azure, you only manage and maintain the agent nodes.
+- [Azure Kubernetes Service (AKS)](/azure/well-architected/service-guides/azure-kubernetes-service) simplifies deploying managed Kubernetes clusters in Azure by offloading the operational overhead to Azure. AKS helps you deploy and manage the containerized components in this architecture, including your custom-made web UI applications. Because Kubernetes masters are managed by Azure, you only manage and maintain the agent nodes.
 
 ### Alternatives
 
@@ -117,7 +117,7 @@ Many scenarios can benefit from the extend-to-Azure architecture, including thes
 
 ## Considerations
 
-These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/architecture/framework).
+These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/well-architected/).
 
 ### Reliability
 
@@ -129,7 +129,7 @@ Reliability ensures your application can meet the commitments you make to your c
 
 Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Overview of the security pillar](/azure/architecture/framework/security/overview).
 
-- Use single sign-on to access the Power Platform by using Azure Active Directory and authentication via LDAP, which is supported by VHI. Any host-based security implementations (such as RACF, TopSecret, or ACF-2) remain fully active.
+- Use single sign-on to access the Power Platform by using Microsoft Entra ID and authentication via LDAP, which is supported by VHI. Any host-based security implementations (such as RACF, TopSecret, or ACF-2) remain fully active.
 - VHI accommodates end-to-end security using TLS and SSH. Host-to-server and server-to-client communications can be secured. Public key cryptography helps protect all data passed between client web applications and the Verastream runtime server. FIPS-validated crypto libraries enhance compliance with data-protection guidelines defined by the U.S. National Institute of Standards and Technology. While a requirement for many government IT systems, these security standards benefit private-sector organizations as well.
 - This solution uses an Azure network security group (NSG) to manage traffic between Azure resources. For more information, see [Network security groups](/azure/virtual-network/network-security-groups-overview).
 - [Azure Bastion](/azure/bastion/bastion-overview) maximizes admin access security by minimizing open ports. Bastion provides secure and seamless RDP/SSH connectivity to virtual network VMs directly from the Azure portal over TLS.
@@ -188,5 +188,4 @@ For more information, contact [legacy2azure@microsoft.com](mailto:legacy2azure@m
 ## Related resources
 
 - [General mainframe refactor to Azure](general-mainframe-refactor.yml)
-- [Azure mainframe and midrange architecture design](../../mainframe/mainframe-midrange-architecture.md)
 - [Make the switch from mainframes to Azure](/azure/cloud-adoption-framework/infrastructure/mainframe-migration/migration-strategies)

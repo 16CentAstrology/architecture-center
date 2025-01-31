@@ -1,7 +1,3 @@
----
-ms.custom:
-  - devx-track-azurecli
----
 This example scenario helps secure the connection to a Microsoft Teams channel bot's web app by using Azure Private Link and Azure Private Endpoint. At the same time, it enables channels in the Teams client to communicate with the bot through an IP that's exposed through an Azure Firewall instance.
 
 ## Architecture
@@ -20,7 +16,7 @@ This example scenario helps secure the connection to a Microsoft Teams channel b
 
   - *Private Endpoint Subnet* (10.0.3.0/24), which is used to route traffic from the firewall to the bot's private endpoint.
 
-- [Azure Firewall](/azure/firewall) exposes a single public IP address that clients can use to communicate with the underlying bot services. Ordinarily, a firewall is placed in its own virtual network, which is a common pattern for [hub and spoke](../../reference-architectures/hybrid-networking/hub-spoke.yml) architectures, but this simplified example deploys all services and resources into a single virtual network. The Azure Firewall instance is placed in its own subnet.
+- [Azure Firewall](/azure/firewall) exposes a single public IP address that clients can use to communicate with the underlying bot services. Ordinarily, a firewall is placed in its own virtual network, which is a common pattern for [hub and spoke](../../networking/architecture/hub-spoke.yml) architectures, but this simplified example deploys all services and resources into a single virtual network. The Azure Firewall instance is placed in its own subnet.
 
 - [Route table](/azure/virtual-network/virtual-networks-udr-overview) defines the routes that traffic takes within the virtual network. It ensures that traffic coming to and from the bot passes through the firewall.
 
@@ -38,11 +34,11 @@ This example scenario helps secure the connection to a Microsoft Teams channel b
 
 ### Components
 
-- [Virtual Network](https://azure.microsoft.com/services/virtual-network)
-- [Azure Firewall](https://azure.microsoft.com/services/azure-firewall)
-- [Azure Bot Services](https://azure.microsoft.com/services/bot-services)
-- [Azure App Service](https://azure.microsoft.com/services/app-service)
-- [Azure Private Link](https://azure.microsoft.com/services/private-link)
+- [Virtual Network](/azure/well-architected/service-guides/azure-virtual-network/reliability)
+- [Azure Firewall](/azure/well-architected/service-guides/azure-firewall)
+- [Azure Bot Services](/azure/bot-service/bot-service-overview)
+- [Azure App Service](/azure/well-architected/service-guides/app-service-web-apps)
+- [Azure Private Link](/azure/private-link/private-link-overview)
 
 ### Alternatives
 
@@ -66,23 +62,32 @@ Organizations can utilize bots for mobile and desktop users. Some examples inclu
 
 ## Considerations
 
-### Monitoring
-
-Although monitoring isn't implemented in this example scenario, a bot's app service can utilize [Azure Monitor](/azure/azure-monitor) services to monitor its availability and performance.
-
-### Scalability
-
-The bots used in this scenario are hosted on Azure App Service. As a result, you can use the standard App Service autoscaling features to automatically scale the number of instances running your bot, which allows your bot to keep up with demand. For more information about autoscaling, see [Autoscaling best practices](../../best-practices/auto-scaling.md).
-
-For other scalability topics, see the Azure Architecture Center [Performance efficiency checklist](/azure/architecture/framework/scalability/performance-efficiency).
-
-### DevOps
-
-It's a common practice to deploy web apps, API apps, and mobile apps to an Azure App Service plan by using continuous deployment pipelines. Because a secured bot's app service is protected with a private endpoint, externally hosted build agents don't have the access that's required to deploy updates. To work around this, you might need to use a solution such as Azure Pipeline [self-hosted DevOps agents](/azure/devops/pipelines/agents/agents?tabs=browser#install).
+These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/well-architected).
 
 ### Security
 
-[Azure DDoS Protection Standard](/azure/ddos-protection/ddos-protection-overview), combined with application-design best practices, provides enhanced DDoS mitigation features to provide more defense against DDoS attacks. You should enable [Azure DDOS Protection Standard](/azure/ddos-protection/ddos-protection-overview) on any perimeter virtual network.
+Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Design review checklist for Security](/azure/well-architected/security/checklist).
+
+[Azure DDoS Protection](/azure/ddos-protection/ddos-protection-overview), combined with application-design best practices, provides enhanced DDoS mitigation features to provide more defense against DDoS attacks. You should enable [Azure DDOS Protection](/azure/ddos-protection/ddos-protection-overview) on any perimeter virtual network.
+
+### Operational Excellence
+
+Operational Excellence covers the operations processes that deploy an application and keep it running in production. For more information, see [Design review checklist for Operational Excellence](/azure/well-architected/operational-excellence/checklist).
+
+#### Monitoring
+
+Although monitoring isn't implemented in this example scenario, a bot's app service can utilize [Azure Monitor](/azure/azure-monitor) services to monitor its availability and performance.
+
+#### DevOps
+
+It's a common practice to deploy web apps, API apps, and mobile apps to an Azure App Service plan by using continuous deployment pipelines. Because a secured bot's app service is protected with a private endpoint, externally hosted build agents don't have the access that's required to deploy updates. To work around this, you might need to use a solution such as Azure Pipeline [self-hosted DevOps agents](/azure/devops/pipelines/agents/agents?tabs=browser#install).
+
+### Performance Efficiency
+
+Performance Efficiency is the ability of your workload to scale to meet the demands placed on it by users in an efficient manner. For more information, see [Design review checklist for Performance Efficiency](/azure/well-architected/performance-efficiency/checklist).
+
+The bots used in this scenario are hosted on Azure App Service. As a result, you can use the standard App Service autoscaling features to automatically scale the number of instances running your bot, which allows your bot to keep up with demand. For more information about autoscaling, see [Autoscaling best practices](../../best-practices/auto-scaling.md).
+
 
 ## Deploy this scenario
 
@@ -292,7 +297,7 @@ You must have an existing Azure account. If you don't have an Azure subscription
 
     ![Screenshot of the rt-SecureBotRouteTable pane.](media/securing-bot-image-009.png)
 
-    After you've created the route table, you add rules to your firewall to deliver traffic from the public IP to the bot app service, and to restrict traffic from any endpoint other than Microsoft Teams. In addition, you'll allow traffic between the virtual network and Azure Bot Services or Azure Active Directory by using service tags.
+    After you've created the route table, you add rules to your firewall to deliver traffic from the public IP to the bot app service, and to restrict traffic from any endpoint other than Microsoft Teams. In addition, you'll allow traffic between the virtual network and Azure Bot Services or Microsoft Entra ID by using service tags.
 
 1. Run the following commands:
 
@@ -372,18 +377,10 @@ Principal author:
 
 - Review the [Bot Framework SDK Documentation](/azure/bot-service/index-bf-sdk?view=azure-bot-service-4.0) to start building bots.
 
-- See [Bots Secured Behind a Firewall & Teams](https://blog.botframework.com/2020/11/23/bots-secured-behind-a-firewall-teams).
-
 ## Related resources
 
 - Visit the [Azure Architecture Center](../../browse/index.yml) to review related architectures and guides.
 
 - [Azure Firewall Architecture Guide - Azure Architecture Center](../firewalls/index.yml)
 
-- [Azure Active Directory IDaaS in Security Operations - Azure Example Scenarios](../aadsec/azure-ad-security.yml)
-
-- [Threat indicators for cyber threat intelligence in Microsoft Sentinel - Azure Example Scenarios](../data/sentinel-threat-intelligence.yml)
-
-- [Confidential computing on a healthcare platform - Azure Example Scenarios](../confidential/healthcare-inference.yml)
-
-- [Hub-spoke network topology in Azure](../../reference-architectures/hybrid-networking/hub-spoke.yml?tabs=cli)
+- [Hub-spoke network topology in Azure](../../networking/architecture/hub-spoke.yml)

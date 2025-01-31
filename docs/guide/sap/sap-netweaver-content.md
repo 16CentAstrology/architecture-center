@@ -8,7 +8,7 @@ The following diagram shows SAP NetWeaver in a Windows environment.
 
 :::image type="content" source="media/sap-netweaver.png" alt-text="Architecture diagram that shows a solution for SAP NetWeaver on Windows. The database is AnyDB on Azure VMs with availability sets." lightbox="media/sap-netweaver.png" border="false":::
 
-_Download a [Visio file](https://arch-center.azureedge.net/sap-netweaver-windows.vsdx) of this architecture._
+*Download a [Visio file](https://arch-center.azureedge.net/sap-netweaver-windows.vsdx) of this architecture.*
 
 > [!NOTE]
 > To deploy this architecture, you need appropriate licensing of SAP products and other non-Microsoft technologies.
@@ -17,7 +17,7 @@ This guide describes a production system. The system is deployed with specific v
 
 ### Workflow
 
-**Virtual networks.** The [Azure Virtual Network](/azure/virtual-network/virtual-networks-overview) service connects Azure resources to each other with enhanced security. In this architecture, the virtual network connects to an on-premises network via an Azure ExpressRoute gateway that's deployed in the hub of a [hub-spoke topology](../../reference-architectures/hybrid-networking/hub-spoke.yml). The spoke is the virtual network that's used for the SAP applications and the database tiers. The hub virtual network is used for shared services like Azure Bastion and backup.
+**Virtual networks.** The [Azure Virtual Network](/azure/virtual-network/virtual-networks-overview) service connects Azure resources to each other with enhanced security. In this architecture, the virtual network connects to an on-premises network via an Azure ExpressRoute gateway that's deployed in the hub of a [hub-spoke topology](../../networking/architecture/hub-spoke.yml). The spoke is the virtual network that's used for the SAP applications and the database tiers. The hub virtual network is used for shared services like Azure Bastion and backup.
 
 **Virtual network peering.** This architecture uses a hub-and-spoke networking topology with multiple virtual networks that are [peered together](/azure/virtual-network/virtual-network-peering-overview). This topology provides network segmentation and isolation for services that are deployed on Azure. Peering enables transparent connectivity between peered virtual networks through the Microsoft backbone network. It doesn't incur a performance penalty if deployed within a single region. The virtual network is divided into separate subnets for each tier: application (SAP NetWeaver), the database, and shared services like Bastion and a third-party backup solution.
 
@@ -171,7 +171,7 @@ To optimize network latency, you can use [proximity placement groups](/azure/vir
 
 ### Availability zones
 
-[Availability zones](/azure/availability-zones/az-overview) provide a way for you to deploy VMs across datacenters, which are physically separated locations within a specific Azure region. Their purpose is to enhance service availability. But deploying resources across zones can increase latency, so keep performance considerations in mind.
+[Availability zones](/azure/reliability/availability-zones-overview) provide a way for you to deploy VMs across datacenters, which are physically separated locations within a specific Azure region. Their purpose is to enhance service availability. But deploying resources across zones can increase latency, so keep performance considerations in mind.
 
 Administrators need a clear network latency profile between all zones of a target region before they can determine the resource placement with minimum inter-zone latency. To create this profile, deploy small VMs in each zone for testing. Recommended tools for these tests include [PsPing](/sysinternals/downloads/psping) and [Iperf](https://sourceforge.net/projects/iperf). When the tests are done, remove the VMs that you used for testing. As an alternative, consider using an [Azure inter-zone latency check tool](https://github.com/Azure/SAP-on-Azure-Scripts-and-Utilities/blob/main/AvZone-Latency-Test/AvZone-Latency-Test.ps1).
 
@@ -193,7 +193,7 @@ In this distributed installation of the SAP application, the base installation i
 
 The Web Dispatcher component is used as a load balancer for SAP traffic among the SAP application servers. To achieve [high availability of SAP Web Dispatcher](https://help.sap.com/doc/saphelp_nw73ehp1/7.31.19/48/9a9a6b48c673e8e10000000a42189b/frameset.htm), Load Balancer implements either the failover cluster or the parallel Web Dispatcher setup.
 
-For internet-facing communications, we recommend a stand-alone solution in the perimeter network, which is also known as _DMZ_, to satisfy security concerns.
+For internet-facing communications, we recommend a stand-alone solution in the perimeter network, which is also known as *DMZ*, to satisfy security concerns.
 
 [Embedded Web Dispatcher](https://help.sap.com/viewer/00b4e4853ef3494da20ebcaceb181d5e/LATEST/en-US/2e708e2d42134b4baabdfeae953b24c5.html) on ASCS is a special option. If you use this option, consider proper sizing because of the extra workload on ASCS.
 
@@ -210,7 +210,7 @@ High availability of the Central Services is implemented with a Windows server f
 
   For implementation details, see [Clustering SAP ASCS on Azure with SIOS](https://techcommunity.microsoft.com/t5/Running-SAP-Applications-on-the/Clustering-SAP-ASCS-Instance-using-Windows-Server-Failover/ba-p/367898).
 
-If you use Standard Load Balancer, you can enable the [high availability port](/azure/load-balancer/load-balancer-ha-ports-overview). By doing so, you can avoid needing to configure load-balancing rules for multiple SAP ports. Also, when you set up Azure load balancers, enable Direct Server Return (DSR), which is also called _Floating IP_. Doing so provides a way for server responses to bypass the load balancer. This direct connection keeps the load balancer from becoming a bottleneck in the path of data transmission. We recommend that you enable DSR for the ASCS and database clusters.
+If you use Standard Load Balancer, you can enable the [high availability port](/azure/load-balancer/load-balancer-ha-ports-overview). By doing so, you can avoid needing to configure load-balancing rules for multiple SAP ports. Also, when you set up Azure load balancers, enable Direct Server Return (DSR), which is also called *Floating IP*. Doing so provides a way for server responses to bypass the load balancer. This direct connection keeps the load balancer from becoming a bottleneck in the path of data transmission. We recommend that you enable DSR for the ASCS and database clusters.
 
 ### Application services in the application servers tier
 
@@ -280,13 +280,13 @@ Databases are critical workloads that require a low recovery point objective (RP
 
 ### Identity management
 
-Use a centralized identity management system like Azure Active Directory (Azure AD) and Active Directory Domain Services (AD DS) to control access to resources at all levels:
+Use a centralized identity management system like Microsoft Entra ID and Active Directory Domain Services (AD DS) to control access to resources at all levels:
 
 - Provide access to Azure resources by using [Azure role-based access control (Azure RBAC)](/azure/role-based-access-control/overview).
 
-- Grant access to Azure VMs by using Lightweight Directory Access Protocol (LDAP), Azure AD, Kerberos, or another system.
+- Grant access to Azure VMs by using Lightweight Directory Access Protocol (LDAP), Microsoft Entra ID, Kerberos, or another system.
 
-Support access within the applications themselves by using the services that SAP provides. Or use [OAuth 2.0 and Azure AD](/azure/active-directory/develop/active-directory-protocols-oauth-code).
+Support access within the applications themselves by using the services that SAP provides. Or use [OAuth 2.0 and Microsoft Entra ID](/azure/active-directory/develop/active-directory-protocols-oauth-code).
 
 ### Monitoring
 

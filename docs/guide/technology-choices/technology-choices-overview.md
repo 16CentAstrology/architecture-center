@@ -5,8 +5,8 @@ author: martinekuan
 ms.author: robbag
 ms.date: 09/19/2022
 ms.topic: conceptual
-ms.service: architecture-center
-ms.subservice: azure-guide
+ms.service: azure-architecture-center
+ms.subservice: architecture-guide
 products:
   - azure-machine-learning
   - azure-stack-hub
@@ -39,7 +39,6 @@ The term *compute* refers to the hosting model for the computing resources that 
 |Article |Summary  |
 |---------|---------|
 |[Choose an Azure compute service](compute-decision-tree.yml)  | Decide which compute service best suits your application.        |
-|[High availability and disaster recovery scenarios for IaaS apps](../../example-scenario/infrastructure/iaas-high-availability-disaster-recovery.yml)  | Learn about high availability (HA) and disaster recovery (DR) options for multitier infrastructure as a service (IaaS) apps in Azure.        |
 |[Choose an Azure compute option for microservices](../../microservices/design/compute-options.md)|     Learn about two compute options for microservices: service orchestrator and serverless architecture.    |
 |[Choose between traditional web apps and SPAs](/dotnet/architecture/modern-web-apps-azure/choose-between-traditional-web-and-single-page-apps?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)  |  Learn how to choose between traditional web apps and single-page applications (SPAs).       |
 |[Choose an Azure multiparty computing service](multiparty-computing-service.yml)  |   Decide which multiparty computing services to use for your solution.      |
@@ -62,10 +61,10 @@ Many organizations need a hybrid approach to analytics, automation, and services
 |---------|---------|
 |[Azure hybrid options](hybrid-considerations.yml)     |    Learn about Azure hybrid solutions, including alternatives to deploy and host hybrid services on-premises, at the edge, in Azure, and in other clouds.     |
 |[Compare Azure Stack Hub to Azure](/azure-stack/user/azure-stack-considerations?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Learn the differences between Azure and Azure Stack Hub.     |
-|[Compare Azure, Azure Stack Hub, and Azure Stack HCI](/azure-stack/operator/compare-azure-azure-stack?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)   |    Learn the differences between Azure, Azure Stack Hub, and Azure Stack HCI.     |
-|[Compare Azure Stack HCI to Azure Stack Hub](/azure-stack/hci/concepts/compare-azure-stack-hub?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Determine whether Azure Stack HCI or Azure Stack Hub is right for your organization.     |
-|[Compare Azure Stack HCI to Windows Server](/azure-stack/hci/concepts/compare-windows-server?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)|     Determine whether Azure Stack HCI or Windows Server is right for your organization.    |
-|[Choose drives for Azure Stack HCI and Windows Server clusters](/azure-stack/hci/concepts/choose-drives?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Learn how to choose drives for Azure Stack HCI and Windows Server clusters to meet performance and capacity requirements.     |
+|[Compare Azure, Azure Stack Hub, and Azure Local](/azure-stack/operator/compare-azure-azure-stack?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)   |    Learn the differences between Azure, Azure Stack Hub, and Azure Local.     |
+|[Compare Azure Local to Azure Stack Hub](/azure-stack/hci/concepts/compare-azure-stack-hub?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Determine whether Azure Local or Azure Stack Hub is right for your organization.     |
+|[Compare Azure Local to Windows Server](/azure-stack/hci/concepts/compare-windows-server?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)|     Determine whether Azure Local or Windows Server is right for your organization.    |
+|[Choose drives for Azure Local and Windows Server clusters](/azure-stack/hci/concepts/choose-drives?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Learn how to choose drives for Azure Local and Windows Server clusters to meet performance and capacity requirements.     |
 
 ## Choose an identity service
 
@@ -73,8 +72,8 @@ Identity solutions help you protect your data and resources. These articles can 
 
 |Article |Summary  |
 |---------|---------|
-|[Active Directory services](/azure/active-directory-domain-services/compare-identity-solutions?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Compare the identity services that are provided by Active Directory Domain Services, Azure Active Directory (Azure AD), and Azure Active Directory Domain Services.     |
-|[Hybrid identity authentication methods](/azure/active-directory/hybrid/choose-ad-authn?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |   Choose an authentication method for an Azure AD hybrid identity solution in a medium-sized to large organization.      |
+|[Active Directory services](/azure/active-directory-domain-services/compare-identity-solutions?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Compare the identity services that are provided by Active Directory Domain Services, Microsoft Entra ID, and Microsoft Entra Domain Services.     |
+|[Hybrid identity authentication methods](/azure/active-directory/hybrid/choose-ad-authn?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |   Choose an authentication method for a Microsoft Entra hybrid identity solution in a medium-sized to large organization.      |
 
 ## Choose a storage service
 
@@ -98,7 +97,6 @@ The cloud is changing the way applications are designed, including how data is p
 |[Choose a big data storage technology in Azure](../../data-guide/technology-choices/data-storage.md)     |    Compare big data storage options in Azure. View key selection criteria and a capability matrix.     |
 |[OLAP solutions](../../data-guide/relational-data/online-analytical-processing.yml)|Learn about online analytical processing (OLAP) solutions for organizing large databases and supporting complex analysis without affecting transactional systems.|
 |[OLTP solutions](../../data-guide/relational-data/online-transaction-processing.md)|Learn about atomicity, consistency, and other features of online transaction processing (OLTP), which manages transactional data and supports querying.|
-|[Data warehousing](../../data-guide/relational-data/data-warehousing.yml)|Learn about data warehousing in Azure. A data warehouse is a repository of integrated data from disparate sources that's used for reporting and analysis of the data.|
 |[Data lakes](../../data-guide/scenarios/data-lake.md)|Learn about data lake storage repositories, which can hold terabytes or petabytes of data in a native, raw format.|
 |[Non-relational data and NoSQL](../../data-guide/big-data/non-relational-data.yml)|Learn about non-relational databases that store data as key/value pairs, graphs, time series, objects, and other storage models.|
 |[Choose a data pipeline orchestration technology](../../data-guide/technology-choices/pipeline-orchestration-data-movement.md) |Choose an Azure data pipeline orchestration technology to automate pipeline orchestration, control flow, and data movement workflows.|
@@ -122,7 +120,7 @@ AI is the capability of a computer to imitate intelligent human behavior. Throug
 
 |Article |Summary  |
 |---------|---------|
-|[Choose an Azure Cognitive Services technology](../../data-guide/technology-choices/cognitive-services.md)|     Learn about cognitive services that you can use in AI applications and data flows.    |
+|[Choose an Azure AI services technology](../../data-guide/technology-choices/ai-services.md)| Learn about AI services that you can use in intelligent applications and data flows. |
 |[Natural language processing technology](../../data-guide/technology-choices/natural-language-processing.yml)     |     Choose a natural language processing service for sentiment analysis, topic and language detection, key phrase extraction, and document categorization.    |
 |[Compare machine learning products and technologies](../../ai-ml/guide/data-science-and-machine-learning.md)     |  Compare options for building, deploying, and managing your machine learning models. Decide which products to use for your solution.       |
 |[MLflow and Azure Machine Learning](/azure/machine-learning/concept-mlflow?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |     Learn about how Azure Machine Learning uses MLflow to log metrics and artifacts from machine learning models and deploy your machine learning models to an endpoint.    |
@@ -144,7 +142,6 @@ Learn about the services that Azure provides to help you deliver events or messa
 |---------|---------|
 |[Compare messaging services](/azure/event-grid/compare-messaging-services?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |     Learn about the three Azure messaging services: Azure Event Grid, Azure Event Hubs, and Azure Service Bus. Choose the best service for your scenario.    |
 |[Asynchronous messaging options](messaging.yml)     |     Learn about asynchronous messaging options in Azure, including the various types of messages and the entities that participate in a messaging infrastructure.    |
-|[Choose a real-time message ingestion technology](../../data-guide/technology-choices/real-time-ingestion.md)     |  Choose an Azure message ingestion store to support message buffering, scale-out processing, reliable delivery, and queuing semantics.       |
 
 ## Choose an IoT option
 
@@ -152,7 +149,7 @@ IoT solutions use a combination of technologies to connect devices, events, and 
 
 |Article |Summary  |
 |---------|---------|
-|[Choose an IoT solution](../../example-scenario/iot/iot-central-iot-hub-cheat-sheet.yml)     |  Use Azure IoT Central or individual Azure platform as a service (PaaS) components to build, deploy, and manage IoT solutions.       |
+|[Choose an IoT solution](/azure/iot/iot-services-and-technologies?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |  To evaluate your IoT solution, use Azure IoT Central, a managed IoT application platform. To build a custom IoT solution from scratch, use Azure IoT platform services such as Azure IoT Hub and the Device Provisioning Service.       |
 |[Compare IoT Hub and Event Hubs](/azure/iot-hub/iot-hub-compare-event-hubs?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |     Review a comparison between Azure IoT Hub and Event Hubs that highlights functional differences and use cases. The comparison includes supported protocols, device management, monitoring, and file uploads.    |
 
 ## Choose a mobile development framework
@@ -160,9 +157,3 @@ IoT solutions use a combination of technologies to connect devices, events, and 
 |Article |Summary  |
 |---------|---------|
 |[Choose a mobile development framework](/azure/developer/mobile-apps/choose-mobile-framework?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |     Learn about the supported native and cross-platform languages for building client applications.    |
-
-## Choose a mixed reality engine
-
-|Article |Summary  |
-|---------|---------|
-|[Choose a mixed reality engine](/windows/mixed-reality/develop/choosing-an-engine?toc=/azure/architecture/toc.json&bc=/azure/architecture/_bread/toc.json)     |    Learn about the engine choices for mixed reality development for HoloLens and virtual reality.    |

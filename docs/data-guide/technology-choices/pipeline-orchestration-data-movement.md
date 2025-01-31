@@ -2,12 +2,12 @@
 title: Choose a data pipeline orchestration technology
 description: Choose an Azure data pipeline orchestration technology to automate pipeline orchestration, control flow, and data movement workflows.
 author: martinekuan
-ms.author: architectures
+ms.author: pnp
 categories: azure
 ms.date: 07/25/2022
 ms.topic: conceptual
-ms.service: architecture-center
-ms.subservice: azure-guide
+ms.service: azure-architecture-center
+ms.subservice: architecture-guide
 products:
   - azure-data-factory
 ms.custom:
@@ -95,6 +95,4 @@ Principal author:
 
 ## Related resources
 
-- [Move data from a SQL Server database to SQL Database with Azure Data Factory](../../data-science-process/move-sql-azure-adf.md)
-- [Data management patterns](../../patterns/category/data-management.md)
-- [DataOps for the modern data warehouse](../../example-scenario/data-warehouse/dataops-mdw.yml)
+- [DataOps for the modern data warehouse](../../databases/architecture/dataops-mdw.yml)

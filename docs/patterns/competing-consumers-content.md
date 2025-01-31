@@ -12,6 +12,9 @@ Use a message queue to implement the communication channel between the applicati
 
 ![Using a message queue to distribute work to instances of a service](./_images/competing-consumers-diagram.png)
 
+>[!NOTE]
+>Although there are multiple consumers of these messages, this is not the same as the [Publish Subscribe pattern](publisher-subscriber.yml) (pub/sub). With the Competing Consumers approach, each message is passed to a single consumer for processing, whereas with the Pub/Sub approach, **all** consumers get passed **every** message.
+
 This solution has the following benefits:
 
 - It provides a load-leveled system that can handle wide variations in the volume of requests sent by application instances. The queue acts as a buffer between the application instances and the consumer service instances. This buffer can help minimize the impact on availability and responsiveness, for both the application and the service instances. For more information, see [Queue-based Load Leveling pattern](./queue-based-load-leveling.yml). Handling a message that requires some long-running processing doesn't prevent other messages from being handled concurrently by other instances of the consumer service.
@@ -28,7 +31,7 @@ This solution has the following benefits:
 
 Consider the following points when deciding how to implement this pattern:
 
-- **Message ordering**. The order in which consumer service instances receive messages isn't guaranteed, and doesn't necessarily reflect the order in which the messages were created. Design the system to ensure that message processing is idempotent because this will help to eliminate any dependency on the order in which messages are handled. For more information, see [Idempotency Patterns](https://blog.jonathanoliver.com/idempotency-patterns/) on Jonathon Oliver's blog.
+- **Message ordering**. The order in which consumer service instances receive messages isn't guaranteed, and doesn't necessarily reflect the order in which the messages were created. Design the system to ensure that message processing is [idempotent](/azure/architecture/reference-architectures/containers/aks-mission-critical/mission-critical-data-platform#idempotent-message-processing) because this will help to eliminate any dependency on the order in which messages are handled. For more information, see [Idempotency Patterns](https://blog.jonathanoliver.com/idempotency-patterns/) on Jonathon Oliver's blog.
 
     > Microsoft Azure Service Bus Queues can implement guaranteed first-in-first-out ordering of messages by using message sessions. For more information, see [Messaging Patterns Using Sessions](/archive/msdn-magazine/2012/december/azure-insider-microsoft-azure-service-bus-messaging-patterns-using-sessions).
 
@@ -61,6 +64,18 @@ This pattern might not be useful when:
 
 > Some messaging systems support sessions that enable a producer to group messages together and ensure that they're all handled by the same consumer. This mechanism can be used with prioritized messages (if they are supported) to implement a form of message ordering that delivers messages in sequence from a producer to a single consumer.
 
+## Workload design
+
+An architect should evaluate how the Competing Consumers pattern can be used in their workload's design to address the goals and principles covered in the [Azure Well-Architected Framework pillars](/azure/well-architected/pillars). For example:
+
+| Pillar | How this pattern supports pillar goals |
+| :----- | :------------------------------------- |
+| [Reliability](/azure/well-architected/reliability/checklist) design decisions help your workload become **resilient** to malfunction and to ensure that it **recovers** to a fully functioning state after a failure occurs. | This pattern builds redundancy in queue processing by treating consumers as replicas, so an instance failure doesn't prevent other consumers from processing queue messages.<br/><br/> - [RE:05 Redundancy](/azure/well-architected/reliability/redundancy)<br/> - [RE:07 Background jobs](/azure/well-architected/reliability/background-jobs) |
+| [Cost Optimization](/azure/well-architected/cost-optimization/checklist) is focused on **sustaining and improving** your workload's **return on investment**. | This pattern can help you optimize costs by enabling scaling that's based on queue depth, down to zero when the queue is empty. It can also optimize costs by enabling you to limit the maximum number of concurrent consumer instances.<br/><br/> - [CO:05 Rate optimization](/azure/well-architected/cost-optimization/get-best-rates)<br/> - [CO:07 Component costs](/azure/well-architected/cost-optimization/optimize-component-costs) |
+| [Performance Efficiency](/azure/well-architected/performance-efficiency/checklist) helps your workload **efficiently meet demands** through optimizations in scaling, data, code. | Distributing load across all consumer nodes increases utilization and dynamic scaling based on queue depth minimize overprovisioning.<br/><br/> - [PE:05 Scaling and partitioning](/azure/well-architected/performance-efficiency/scale-partition)<br/> - [PE:07 Code and infrastructure](/azure/well-architected/performance-efficiency/optimize-code-infrastructure) |
+
+As with any design decision, consider any tradeoffs against the goals of the other pillars that might be introduced with this pattern.
+
 ## Example
 
 Azure provides Service Bus Queues and Azure Function queue triggers that, when combined, are a direct implementation of this cloud design pattern. Azure Functions integrate with Azure Service Bus via triggers and bindings. Integrating with Service Bus allows you to build functions that consume queue messages sent by publishers. The publishing application(s) will post messages to a queue, and consumers, implemented as Azure Functions, can retrieve messages from this queue and handle them.
@@ -73,64 +88,7 @@ For detailed information on using Azure Service Bus queues, see [Service Bus que
 
 For information on Queue triggered Azure Functions, see [Azure Service Bus trigger for Azure Functions](/azure/azure-functions/functions-bindings-service-bus-trigger).
 
-The following code shows how you can create a new message and send it to a Service Bus Queue by using a `ServiceBusClient` instance.
-
-```csharp
-private string serviceBusConnectionString = ...;
-...
-
-  public async Task SendMessagesAsync(CancellationToken  ct)
-  {
-   try
-   {
-    var msgNumber = 0;
-
-    var serviceBusClient = new ServiceBusClient(serviceBusConnectionString);
-
-    // create the sender
-    ServiceBusSender sender = serviceBusClient.CreateSender("myqueue");
-
-    while (!ct.IsCancellationRequested)
-    {
-     // Create a new message to send to the queue
-     string messageBody = $"Message {msgNumber}";
-     var message = new ServiceBusMessage(messageBody);
-
-     // Write the body of the message to the console
-     this._logger.LogInformation($"Sending message: {messageBody}");
-
-     // Send the message to the queue
-     await sender.SendMessageAsync(message);
-
-     this._logger.LogInformation("Message successfully sent.");
-     msgNumber++;
-    }
-   }
-   catch (Exception exception)
-   {
-    this._logger.LogException(exception.Message);
-   }
-  }
-```
-
-The following code example shows a consumer, written as a C# Azure Function, that reads message metadata and logs a Service Bus Queue message. Note how the `ServiceBusTrigger` attribute is used to bind it to a Service Bus Queue.
-
-```csharp
-[FunctionName("ProcessQueueMessage")]
-public static void Run(
-    [ServiceBusTrigger("myqueue", Connection = "ServiceBusConnectionString")]
-    string myQueueItem,
-    Int32 deliveryCount,
-    DateTime enqueuedTimeUtc,
-    string messageId,
-    ILogger log)
-{
-    log.LogInformation($"C# ServiceBus queue trigger function consumed message: {myQueueItem}");
-    log.LogInformation($"EnqueuedTimeUtc={enqueuedTimeUtc}");
-    log.LogInformation($"DeliveryCount={deliveryCount}");
-    log.LogInformation($"MessageId={messageId}");
-}
-```
+To see how you can use the Azure Service Bus client library for .NET to send messages to a Service Bus Queue, see the published [Examples](/dotnet/api/overview/azure/messaging.servicebus-readme?view=azure-dotnet#examples).
 
 ## Next steps
 

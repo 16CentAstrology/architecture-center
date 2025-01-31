@@ -10,7 +10,7 @@ This architecture and the implementation are focused on infrastructure and not t
 >
 > ![GitHub logo](../../../_images/github.png) [GitHub: Azure Kubernetes Service (AKS) Baseline Cluster for Regulated Workloads](https://github.com/mspnp/aks-baseline-regulated) demonstrates the regulated infrastructure. This implementation provides a microservices application. It's included to help you experience the infrastructure and illustrate the network and security controls. The application does not represent or implement an actual PCI DSS workload.
 
-## Protect Cardholder Data
+## Protect cardholder data
 
 ### **Requirement 3**&mdash;Protect stored cardholder data
 
@@ -25,16 +25,6 @@ This architecture and the implementation are focused on infrastructure and not t
 |[Requirement 3.5](#requirement-35)|Document and implement procedures to protect keys used to secure stored cardholder data against disclosure and misuse: |
 |[Requirement 3.6](#requirement-36)|Fully document and implement all key-management processes and procedures for cryptographic keys used for encryption of cardholder data, including the following: |
 |[Requirement 3.7](#requirement-37)|Ensure that security policies and operational procedures for protecting stored cardholder data are documented, in use, and known to all affected parties.|
-
-### **Requirement 4**&mdash;Encrypt transmission of cardholder data across open, public networks.
-
-#### Your responsibilities
-
-|Requirement|Responsibility|
-|---|---|
-|[Requirement 4.1](#requirement-41)|Use strong cryptography and security protocols (for example, TLS, IPSEC, SSH, etc.) to safeguard sensitive cardholder data during transmission over open, public networks, including the following:|
-|[Requirement 4.2](#requirement-42)|Never send unprotected PANs by end-user messaging technologies (for example, e-mail, instant messaging, SMS, chat, etc.).|
-|[Requirement 4.3](#requirement-43)|Ensure that security policies and operational procedures for encrypting transmissions of cardholder data are documented, in use, and known to all affected parties.|
 
 ### Requirement 3.1
 
@@ -61,7 +51,7 @@ Review [this list of policy definitions](/azure/aks/policy-reference) and apply 
 
 You might need to temporarily cache data. We recommend that you protect the cached data while it's moved to a storage solution. Consider enabling the host-based encryption feature on AKS. This will encrypt the data stored on node VMs. For more information, see [Host-based encryption on Azure Kubernetes Service (AKS)](/azure/aks/enable-host-encryption). Also, enable a built-in Azure policy that requires encryption of temporary disks and cache for node pools.
 
-When you're choosing a storage technology, explore the retention features. For example, Azure Blob Storage provides [time-based retention policies](/azure/storage/blobs/storage-blob-immutable-storage#time-based-retention-policies). Another choice is to implement a custom solution that deletes data according to retention policies. An example is Data Lifecycle Management (DLM), which manages data life-cycle activities. The solution has been designed with services like Azure Data Factory, Azure Active Directory (Azure AD), and Azure Key Vault.
+When you're choosing a storage technology, explore the retention features. For example, Azure Blob Storage provides [time-based retention policies](/azure/storage/blobs/storage-blob-immutable-storage#time-based-retention-policies). Another choice is to implement a custom solution that deletes data according to retention policies. An example is Data Lifecycle Management (DLM), which manages data life-cycle activities. The solution has been designed with services like Azure Data Factory, Microsoft Entra ID, and Azure Key Vault.
 
 For more information, see [Managing the data life cycle using Azure Data Factory](https://www.microsoft.com/itshowcase/managing-the-data-life-cycle-using-azure-data-factory).
 
@@ -73,13 +63,13 @@ Do not store sensitive authentication data after authorization (even if encrypte
 
 (APPLIES TO: Requirement 3.2.1, Requirement 3.2.2, Requirement 3.2.3)
 
-Processing and protecting data is beyond the scope of this architecture. Here are some general considerations.
+Processing and protecting data is a workload concern and is beyond the scope of this architecture. Here are some general considerations.
 
 Per the standard, sensitive authentication data consists of full track data, card validation code or value, and PIN data. As part of CHD processing, make sure that authentication data is not exposed in sources such as:
 - Logs that are emitted from the pods.
 - Exception handling routines.
 - File names.
-- Cache.
+- Caches.
 
 As general guidance, merchants shouldn't store this information. If there's a need document the business justification.
 
@@ -133,19 +123,19 @@ With Azure Storage, you can also use self-managed keys. For details, see  [Custo
 
 Similar capabilities are available for databases. For Azure SQL options, see [Azure SQL Transparent Data Encryption with customer-managed key](/azure/azure-sql/database/transparent-data-encryption-byok-overview).
 
-Make sure you store your keys in a managed key store (Azure Key Vault, Azure Key Vault Managed Hardware Security Module (HSM), and others).
+Make sure you store your keys in a managed key store such as Azure Key Vault, Azure Managed HSM, or a third-party key management solution.
 
 If you need to store data temporarily, enable the [host-encryption](/azure/aks/enable-host-encryption) feature of AKS to make sure that data stored on VM nodes is encrypted.
 
 ### Requirement 3.5
 
-Document and implement procedures to protect keys used to secure stored cardholder data against disclosure and misuse:
+Document and implement procedures to protect keys used to secure stored cardholder data against disclosure and misuse.
 
 #### Your responsibilities
 
 These points are described in the subsections:
 - Maintain the practice of least-privilege access for the cryptographic keys.
-- Azure Key Vault and Azure Active Directory are designed to support the authorization and audit logging requirements. For details, see [Request authentication for Azure Key Vault](/azure/key-vault/general/authentication-requests-and-responses#authentication).
+- Azure Key Vault and Microsoft Entra ID are designed to support the authorization and audit logging requirements. For details, see [Request authentication for Azure Key Vault](/azure/key-vault/general/authentication-requests-and-responses#authentication).
 - Protect all data encryption keys with a key encryption key that's stored in a cryptographic device.
 - If you use self-managed keys (instead of Microsoft-managed keys), have a process and documentation for maintaining tasks related to key management.
 
@@ -170,7 +160,9 @@ Restrict access to cryptographic keys to the fewest number of custodians necessa
 
 ##### Your responsibilities
 
-Minimize the number of people who have access to the keys. If you're using any group-based role assignments, set up a recurring audit process to review roles that have access. When project team members change, accounts that are no longer relevant must be removed from permissions. Only the right people should have access. Consider removing standing permissions in favor of just-in-time (JIT) role assignments, time-based role activation, and approval-based role activation.
+Minimize the number of people who have access to the keys. If you're using any group-based role assignments, set up a recurring audit process to review roles that have access. When project team members change, accounts that are no longer relevant must be removed from permissions. Only the right people should have access. Use Microsoft Entra ID [access reviews](/entra/id-governance/access-reviews-overview) to regularly review group memberships.
+
+Consider removing standing permissions in favor of just-in-time (JIT) role assignments, time-based role activation, and approval-based role activation. For example, consider using [Privileged Identity Management](/entra/id-governance/privileged-identity-management/pim-configure).
 
 #### Requirement 3.5.3
 
@@ -210,7 +202,7 @@ Prevention of unauthorized substitution of cryptographic keys.
 
 - **Enable diagnostics** on all key stores. Use Azure Monitor for Key Vault. It collects logs and metrics and sends them to Azure Monitor. For more information, see [Monitoring your key vault service with Azure Monitor for Key Vault](/azure/azure-monitor/insights/key-vault-insights-overview).
 - **Give read-only permissions** to all consumers.
-- **Do not have standing permissions** for all management service principals. Instead, use just-in-time (JIT) role assignments, time-based role activation, and approval-based role activation.
+- **Do not have standing permissions** for management users or principals. Instead, use just-in-time (JIT) role assignments, time-based role activation, and approval-based role activation.
 - **Create a centralized view** by integrating logs and alerts into security information and event management (SIEM) solutions, such as Microsoft Sentinel.
 - **Take action on alerts** and notifications, especially on unexpected changes.
 
@@ -231,6 +223,16 @@ Ensure that security policies and operational procedures for protecting stored c
 Create documentation as a general statement plus a series of up-to-date role guides for all personas.  Perform new-hire training and ongoing training.
 
 It's critical that you maintain thorough documentation about the processes and policies. Several teams participate in making sure data is protected at rest and in transit. In your documentation, provide role guidance for all personas. The roles should include SRE, customer support, sales, network operations, security operations, software engineers, database administrators, and others. Personnel should be trained in NIST guidance and data-at-rest strategies to keep the skillset up to date. Training requirements are addressed in [Requirement 6.5](./aks-pci-malware.yml#requirement-65) and [Requirement 12.6](./aks-pci-policy.yml).
+
+### **Requirement 4**&mdash;Encrypt transmission of cardholder data across open, public networks
+
+#### Your responsibilities
+
+|Requirement|Responsibility|
+|---|---|
+|[Requirement 4.1](#requirement-41)|Use strong cryptography and security protocols (for example, TLS, IPSEC, SSH, etc.) to safeguard sensitive cardholder data during transmission over open, public networks, including the following:|
+|[Requirement 4.2](#requirement-42)|Never send unprotected PANs by end-user messaging technologies (for example, e-mail, instant messaging, SMS, chat, etc.).|
+|[Requirement 4.3](#requirement-43)|Ensure that security policies and operational procedures for encrypting transmissions of cardholder data are documented, in use, and known to all affected parties.|
 
 ### Requirement 4.1
 

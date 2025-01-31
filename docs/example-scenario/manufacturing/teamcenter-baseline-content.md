@@ -22,33 +22,25 @@ Siemens Teamcenter PLM baseline architecture has four distributed tiers (client,
 ### Workflow
 
 1. Teamcenter users access the Teamcenter application via an HTTPS-based endpoint Public URL. Users access the application through two user interfaces: (1) a Rich client and (2) an Active workspace client.
-1. User authenticates using a Teamcenter credential that a Teamcenter administrator creates in Teamcenter. Azure Active Directory with SAML configuration allows single sign-on to the Teamcenter application.
+1. User authenticates using a Teamcenter credential that a Teamcenter administrator creates in Teamcenter. Microsoft Entra ID with SAML configuration allows single sign-on to the Teamcenter application.
 1. Azure Firewall backbone filters traffic and threat intelligence from Microsoft Cyber Security. HTTPS traffic directed to the Azure Application gateway. The Hub virtual network and Spoke virtual network are peered so they can communicate over the Azure backbone network.
 1. Azure Application Gateway routes traffic to the Teamcenter web server virtual machines in the Web Tier. Azure Application Gateway with Azure Firewall inspects the incoming HTTP traffic to continuously monitor Teamcenter against exploits. For reliable performance of your application, the virtual machine size, disk configuration, and application installs should match across all virtual machines. Based on your requirements, you can consider the use of Azure Virtual Machines Scale Sets. With Virtual Machine Scale Sets, virtual machine instances have the same base OS image and configuration.
 1. The Web subnet in the Web tier runs the following Teamcenter components on virtual machines:
 
     - *Teamcenter Security services (TCSS)* enable role-based access control (RBAC) for end users and secure access to resources. With TCSS, users can navigate between different Teamcenter applications without encountering multiple authentication challenges. It offers a unified framework for integration with a site's single sign-on solution and simplifies the authentication process
-
     - *Teamcenter HTTP servers (TC HTTP servers)* run third-party HTTP web servers, such as IIS (.NET) or Java-based servers, to support the Rich client or Active Workspace client. These web server virtual machines also host the Teamcenter servlet container. Network security groups (NSGs) secure inbound and outbound communication between the Application Gateway subnet, web subnet and enterprise subnets. NSGs ensure the necessary connectivity and security measures are in place for data transfer between the subnets.
-
     - *Active Workspace Gateway* provides the functionality for the Teamcenter Active Workspace client. It serves as the routing mechanism for static content, such as HTML, CSS, JavaScript, JSON, and dynamic content such as API routing. It directs these requests to the appropriate back-end services and microservices responsible for tasks such as Service-Oriented Architecture (SOA), File Management Services (FMS), Visualization, and GraphQL. This architecture ensures efficient delivery and processing of content within the Teamcenter Product Lifecycle Management application running on Azure.
-
-    - Network security groups (NSGs) secure inbound and outbound communication between the Enterprise subnets, Database subnet & Storage subnet.
+    - *Network security groups (NSGs)* secure inbound and outbound communication between the Enterprise subnets, Database subnet & Storage subnet.
 
 1. The Enterprise subnet runs the following core Teamcenter components:
 
     - *Enterprise tier virtual machines* run the business logic components of Teamcenter. These components include Teamcenter Foundation, Server Manager, Dispatcher, and Microservices.
-
     - *Active workspace* serves as the platform where Active Workspace users sign in to access information and perform tasks based on their assigned roles.
-
     - *Visualization virtual machines* run Teamcenter lifecycle visualization. This feature empowers every member of your organization to access and view design data that is commonly stored in CAD-data formats.
-
     - *File Management System (FMS) virtual machine* stores and retrieves user files (CAD, PDF) through SMB/NFS access protocols from file storage (ex. managed disks, Azure Files or Azure NetApp Files). It also supports caching and file distribution. FMS requires the installation of an FMS server cache (FSC) and FMS client cache (FCC) components. FCC resides on client desktop.
-
     - *File server cache virtual machine* is a volume server for file management. It's also a server-level performance cache server and provides shared data access for multiple users. All Teamcenter file access/update is via FMS server cache processes. The cache process reads and writes the files in volume servers. It also streams the file(s) to/from clients as required.
 
-    - *Search server*, Apache Solr performs smart searches and supports real-time indexing of data.
-
+    - *Search server Apache Solr* performs smart searches and supports real-time indexing of data.
     - *License server virtual machine* runs a valid Teamcenter FlexPLM license.
 
 1. *Database subnet* runs a SQL Server database using an infrastructure-as-a-service deployment. It uses SQL Server Always On availability groups for asynchronous replication. The deployment could run an Oracle on this IaaS deployment.
@@ -59,23 +51,19 @@ Siemens Teamcenter PLM baseline architecture has four distributed tiers (client,
 
 This architecture consists of the following Azure components.
 
-- [Azure Virtual Network](https://azure.microsoft.com/services/virtual-network/): Azure Virtual Network is a service that facilitates secure communication between Azure resources, the internet, and on-premises networks. In a Siemens Teamcenter deployment, you can use it to create a secure network infrastructure for the Teamcenter services, allowing safe and reliable communication between them.
-- [Virtual machines](https://azure.microsoft.com/services/virtual-machines/#overview): Azure Virtual Machines is an IaaS that provides on-demand, scalable computing resources without the need for physical hardware maintenance. Virtual machines provide the computing infrastructure that hosts the various Teamcenter services.
-- [Azure Files](https://azure.microsoft.com/products/storage/files): Azure Files is a service that offers shared storage and allows you to create a hierarchical folder structure to upload files. In a Teamcenter deployment, it provides shared storage space for collaboration, document management, and version control.
-- [Azure NetApp Files](https://azure.microsoft.com/services/netapp): Azure NetApp Files is a file-storage service developed jointly by Microsoft and NetApp. You can use Azure NetApp Files to host and manage file-based applications of Teamcenter.
-- [Azure Active Directory](https://azure.microsoft.com/products/active-directory): Azure Active Directory provides on-premises directory synchronization and single sign-on features. You can use Azure Active Directory to manage and authenticate users, providing seamless access to Teamcenter services hosted on Azure.
+- [Azure Virtual Network](/azure/well-architected/service-guides/azure-virtual-network/reliability): Azure Virtual Network is a service that facilitates secure communication between Azure resources, the internet, and on-premises networks. In a Siemens Teamcenter deployment, you can use it to create a secure network infrastructure for the Teamcenter services, allowing safe and reliable communication between them.
+- [Virtual machines](/azure/well-architected/service-guides/virtual-machines): Azure Virtual Machines is an IaaS that provides on-demand, scalable computing resources without the need for physical hardware maintenance. Virtual machines provide the computing infrastructure that hosts the various Teamcenter services.
+- [Azure Files](/azure/well-architected/service-guides/azure-files): Azure Files is a service that offers shared storage and allows you to create a hierarchical folder structure to upload files. In a Teamcenter deployment, it provides shared storage space for collaboration, document management, and version control.
+- [Azure NetApp Files](/azure/well-architected/service-guides/azure-netapp-files): Azure NetApp Files is a file-storage service developed jointly by Microsoft and NetApp. You can use Azure NetApp Files to host and manage file-based applications of Teamcenter.
+- [Microsoft Entra ID](/entra/fundamentals/whatis): Microsoft Entra ID provides on-premises directory synchronization and single sign-on features. You can use Microsoft Entra ID to manage and authenticate users, providing seamless access to Teamcenter services hosted on Azure.
 - [SQL Server on Azure Virtual Machines](/azure/azure-sql/virtual-machines/windows/sql-server-on-azure-vm-iaas-what-is-overview): SQL Server on Azure Virtual Machines allows SQL Server workloads to be migrated to the cloud with full code compatibility. You can use this service to host the Teamcenter database, providing reliable, secure, and performant data services.
 - [Network security groups](/azure/virtual-network/network-security-groups-overview): Network security groups are used to limit access to subnets within the Azure network. For a Teamcenter deployment, you use network security groups to secure the network infrastructure, ensuring that only authorized traffic can access the Teamcenter resources.
 - [Azure Public IP](/azure/virtual-network/ip-services/public-ip-addresses): Azure Public IP is a service that connects Azure Virtual Machines to the internet via a public IP address. The public IP address provides internet access to the hosted Teamcenter services, facilitating remote access and collaboration.
-- [Azure Monitor](https://azure.microsoft.com/services/monitor) : Azure Monitor provides detailed, real-time monitoring data for any Azure resource. You use it to monitor the performance and usage of Teamcenter services, providing vital information for maintaining and improving the deployment.
-- [Azure Key Vault](https://azure.microsoft.com/services/key-vault): Azure Key Vault is a service for securely storing and accessing secrets used by cloud apps and services. In a Teamcenter deployment, you use it to store sensitive information such as API keys, passwords, and certificates.
-- [Azure Application Gateway](https://azure.microsoft.com/services/application-gateway/): Azure Application Gateway is a web traffic load balancer that manages traffic to web applications. You use it to manage and distribute traffic to the Teamcenter services, improving performance and reliability.
-- [Azure Virtual Desktop](https://azure.microsoft.com/services/virtual-desktop): Azure Virtual Desktop is a desktop and app virtualization service. You use it to provide users with a virtualized desktop environment for CAD workstation, facilitating access to Teamcenter services from anywhere.
-- [Azure Firewall](https://azure.microsoft.com/products/azure-firewall): Azure Firewall is a cloud-native network firewall security service that provides threat protection for cloud workloads. For a Teamcenter deployment, Azure Firewall can be used to protect the Teamcenter frontend services from threats.
-
-## Considerations
-
-These considerations align to the pillars of the Azure Well-Architected Framework. A set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/architecture/framework).
+- [Azure Monitor](/azure/azure-monitor/overview) : Azure Monitor provides detailed, real-time monitoring data for any Azure resource. You use it to monitor the performance and usage of Teamcenter services, providing vital information for maintaining and improving the deployment.
+- [Azure Key Vault](/azure/key-vault/general/overview): Azure Key Vault is a service for securely storing and accessing secrets used by cloud apps and services. In a Teamcenter deployment, you use it to store sensitive information such as API keys, passwords, and certificates.
+- [Azure Application Gateway](/azure/well-architected/service-guides/azure-application-gateway): Azure Application Gateway is a web traffic load balancer that manages traffic to web applications. You use it to manage and distribute traffic to the Teamcenter services, improving performance and reliability.
+- [Azure Virtual Desktop](/azure/virtual-desktop/overview): Azure Virtual Desktop is a desktop and app virtualization service. You use it to provide users with a virtualized desktop environment for CAD workstation, facilitating access to Teamcenter services from anywhere.
+- [Azure Firewall](/azure/well-architected/service-guides/azure-firewall): Azure Firewall is a cloud-native network firewall security service that provides threat protection for cloud workloads. For a Teamcenter deployment, Azure Firewall can be used to protect the Teamcenter frontend services from threats.
 
 ### Potential use cases
 
@@ -88,9 +76,13 @@ Teamcenter provides a broad and rich depth of many functional solutions for mana
 - Increase competitive advantage by increasing speed to market for new products.
 - Power digital thread and digital twins.
 
+## Considerations
+
+These considerations implement the pillars of the Azure Well-Architected Framework, which is a set of guiding tenets that can be used to improve the quality of a workload. For more information, see [Microsoft Azure Well-Architected Framework](/azure/well-architected/).
+
 ### Reliability
 
-Reliability ensures your application can meet the commitments you make to your customers. For more information, see [Overview of the reliability pillar](/azure/architecture/framework/resiliency/overview). In general, consider Availability zones or Availability sets based on requirements of multisite implementations. For more information, see [High availability and disaster recovery for IaaS apps](/azure/architecture/example-scenario/infrastructure/iaas-high-availability-disaster-recovery).
+Reliability ensures your application can meet the commitments you make to your customers. For more information, see [Design review checklist for Reliability](/azure/well-architected/reliability/checklist).
 
 #### Web tier and Enterprise tier reliability
 
@@ -119,7 +111,7 @@ By distributing software functions over a network, the application can achieve h
 
 **Configure backup frequency.** Determine backup needs based on business requirements, considering the increasing number of users. A daily backup might not be sufficient for optimal protection, so adjust the frequency accordingly.
 
-**Coordinate volume data with database backups.** Ensure that backups for the File Manager volume servers (FMS) are coordinated with database backups. . This configuration allows you to sync the actual files with the file metadata. The database contains metadata (pointers) to files within the FMS, making synchronization crucial.
+**Coordinate volume data with database backups.** Ensure that backups for the File Manager volume servers (FMS) are coordinated with database backups. This configuration allows you to sync the actual files with the file metadata. The database contains metadata (pointers) to files within the FMS, making synchronization crucial.
 
 **Enhance database reliability.** Deploy SQL Server virtual machines in Availability Sets to improve database reliability. Availability Sets deploy virtual machines across fault domains and update domains, mitigating downtime events within the datacenter. Create an availability set during virtual machine provisioning. Consider replicating Azure storage across different Azure datacenters for extra redundancy.
 
@@ -129,7 +121,7 @@ For Oracle databases, Azure offers availability zones and availability sets. You
 
 ### Security
 
-Azure Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Overview of the security pillar](/azure/architecture/framework/security/overview).
+Security provides assurances against deliberate attacks and the abuse of your valuable data and systems. For more information, see [Design review checklist for Security](/azure/well-architected/security/checklist).
 
 **Configure the Login Service and Identity Service.** Teamcenter provides the Teamcenter Security Services (TCSS) feature. The Login Service and Identity Service are essential components of TCSS and can be built using the Web Application Manager. Deploy these Java EE web applications on a supported Java EE web application server.
 
@@ -137,9 +129,9 @@ Azure Security provides assurances against deliberate attacks and the abuse of y
 
 *Identity Service*: The Identity Service can only be accessed using IPv4 addressing. It includes a table that points to the application root URL. As a client interface, it must accept both IPv4 and IPv6 URLs. To utilize the Security Services, ensure the installation of the Security Services Session Agent in the Web tier.
 
-### Cost optimization
+### Cost Optimization
 
-Cost optimization is about looking at ways to reduce unnecessary expenses and improve operational efficiencies. For more information, see [Overview of the cost optimization pillar](/azure/architecture/framework/cost/overview).
+Cost Optimization is about looking at ways to reduce unnecessary expenses and improve operational efficiencies. For more information, see [Design review checklist for Cost Optimization](/azure/well-architected/cost-optimization/checklist).
 
 **Consider constrained vCPU virtual machines.** If your workload requires more memory and fewer CPUs, consider using one of [constrained vCPU virtual machine](/azure/virtual-machines/constrained-vcpu) sizes to reduce software licensing costs that are charged per vCPU.
 
@@ -155,9 +147,9 @@ Cost optimization is about looking at ways to reduce unnecessary expenses and im
 
 **Use the Azure calculator.** The Azure calculator can help you estimate and optimize cost. For an estimated cost of the baseline architecture, see [estimated cost](https://azure.com/e/625cea91d4aa43bca73e0a8235817ba7). Your estimates might differ based on your Azure Teamcenter implementation.
 
-### Performance efficiency
+### Performance Efficiency
 
-Performance efficiency is the ability of your workload to scale to meet the demands placed on it by users in an efficient manner. For more information, see [Performance efficiency pillar overview](/azure/architecture/framework/scalability/overview).
+Performance Efficiency is the ability of your workload to scale to meet the demands placed on it by users in an efficient manner. For more information, see [Design review checklist for Performance Efficiency](/azure/well-architected/performance-efficiency/checklist).
 
 **Use proximity placement groups.** Use proximity placement groups to achieve optimal network latency, particularly for CAD applications. Employ proximity placement groups when significant network latency between the application layer and the database impacts the workload. Take note of the limitations on virtual machine type availability within the same datacenter. For more information, see [Proximity placement groups](/azure/virtual-machines/co-location).
 
